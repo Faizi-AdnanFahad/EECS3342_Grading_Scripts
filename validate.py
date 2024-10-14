@@ -54,6 +54,12 @@ def check_assumption2(po_sheet_name, c_sheet_name, m_sheet_name):
     
     return eecs_logins_from_PO == eecs_logins_from_context == eecs_logins_from_machine
 
+
+def check_assumption3(po_sheet_name, c_sheet_name, m_sheet_name):
+    proof_obligation_sheet = read_excel_file(XLSC_FILE_PATH, po_sheet_name)
+    first_row = next(proof_obligation_sheet.iter_rows(values_only=True, max_row=1)) # headers ROW
+    return headers_come_in_pair(first_row)
+   
         
 # Given a row, return true if its a grading component.
 # a row is a grading component if its first col's value is a string and it's second col's value is an integer.
@@ -77,6 +83,19 @@ def getEECSLogins(sheet):
                 eecs_logins_from_PO.append(col1)
     return eecs_logins_from_PO
 
+def headers_come_in_pair(headers_tuple):
+    # Skip the first column and check the rest in pairs
+    for i in range(1, len(headers_tuple) - 1, 2):
+        grading_component = headers_tuple[i]
+        ta_comment = headers_tuple[i + 1]
+
+        # Check if the second element of the pair is "TA Comment"
+        if ta_comment != constants.TA_COMMENT_HEADER_NAME:
+            print(f"Error: '{grading_component}' is not followed by {constants.TA_COMMENT_HEADER_NAME}.")
+            return False
+
+    print(f"All grading components are correctly followed by {constants.TA_COMMENT_HEADER_NAME}.")
+    return True
 
 if __name__ == "__main__":
         assumption1 = check_assumption1(MARKING_SCHEME_SHEET_NAME)
@@ -85,4 +104,8 @@ if __name__ == "__main__":
         assumption2 = check_assumption2(PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
         print("assumption 2: ", assumption2)
         print("==========================================================")
+        assumption3 = check_assumption3(PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
+        print("assumption 3: ", assumption3)
+        print("==========================================================")
+
 

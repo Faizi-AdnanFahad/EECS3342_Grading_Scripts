@@ -7,3 +7,6 @@ MARKING_SCHEME_SHEET_NAME = 'Marking Scheme - ProgTest1a'
 PROOF_OBLIGATION_SHEET_NAME = 'Proof Obligations'
 CONTEXT_SHEET_NAME = 'Context C0A'
 MACHINE_SHEET_NAME = 'Machine EnrollmentA'
+
+# other useful Constants
+TA_COMMENT_HEADER_NAME = "TA Comment"
