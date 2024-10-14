@@ -55,10 +55,16 @@ def check_assumption2(po_sheet_name, c_sheet_name, m_sheet_name):
     return eecs_logins_from_PO == eecs_logins_from_context == eecs_logins_from_machine
 
 
-def check_assumption3(po_sheet_name, c_sheet_name, m_sheet_name):
+def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_name):
     proof_obligation_sheet = read_excel_file(XLSC_FILE_PATH, po_sheet_name)
     first_row = next(proof_obligation_sheet.iter_rows(values_only=True, max_row=1)) # headers ROW
-    return headers_come_in_pair(first_row)
+    
+    grade_component_list = get_grade_component_list(m_scheme_sheet_name)
+    valid_header = is_valid_header(first_row, grade_component_list)
+    if valid_header:
+        return headers_come_in_pair(first_row)
+    else:
+        return valid_header
    
         
 # Given a row, return true if its a grading component.
@@ -83,6 +89,15 @@ def getEECSLogins(sheet):
                 eecs_logins_from_PO.append(col1)
     return eecs_logins_from_PO
 
+def is_valid_header(headers_tuple, grading_component_list):
+    for i in range(1, len(headers_tuple) - 1, 2):
+        current_grading_component = headers_tuple[i]
+        if current_grading_component not in grading_component_list:
+            print(f"Error: '{current_grading_component}' is not a valid grading component.")
+            return False
+        else:
+            return True
+
 def headers_come_in_pair(headers_tuple):
     # Skip the first column and check the rest in pairs
     for i in range(1, len(headers_tuple) - 1, 2):
@@ -94,8 +109,20 @@ def headers_come_in_pair(headers_tuple):
             print(f"Error: '{grading_component}' is not followed by {constants.TA_COMMENT_HEADER_NAME}.")
             return False
 
-    print(f"All grading components are correctly followed by {constants.TA_COMMENT_HEADER_NAME}.")
+    # print(f"All grading components are correctly followed by {constants.TA_COMMENT_HEADER_NAME}.")
     return True
+
+# Given a marking scheme, if its a grading component (check grading component function to see the requirement),
+# this function will append the grading_component_name into a list and returns the accumulated final list.
+def get_grade_component_list(m_scheme_sheet_name):
+    grade_components = []
+    marking_scheme_sheet = read_excel_file(XLSC_FILE_PATH, m_scheme_sheet_name)
+    for row in marking_scheme_sheet.iter_rows(values_only=True):
+        if is_a_grading_component(row):
+            grade_component_name = row[0]
+            grade_components.append(grade_component_name)
+    
+    return grade_components
 
 if __name__ == "__main__":
         assumption1 = check_assumption1(MARKING_SCHEME_SHEET_NAME)
@@ -104,8 +131,6 @@ if __name__ == "__main__":
         assumption2 = check_assumption2(PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
         print("assumption 2: ", assumption2)
         print("==========================================================")
-        assumption3 = check_assumption3(PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
+        assumption3 = check_assumption3(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
         print("assumption 3: ", assumption3)
         print("==========================================================")
-
-
