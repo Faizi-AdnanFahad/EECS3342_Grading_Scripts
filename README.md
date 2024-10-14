@@ -1,1 +1,4 @@
-# EECS3342_Grading_Scripts
+
+
+`pip3 install pandas`
+`pip install openpyxl`
