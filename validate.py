@@ -56,17 +56,53 @@ def check_assumption2(po_sheet_name, c_sheet_name, m_sheet_name):
 
 
 def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_name):
-    proof_obligation_sheet = read_excel_file(XLSC_FILE_PATH, po_sheet_name)
-    first_row = next(proof_obligation_sheet.iter_rows(values_only=True, max_row=1)) # headers ROW
-    
     grade_component_list = get_grade_component_list(m_scheme_sheet_name)
-    valid_header = is_valid_header(first_row, grade_component_list)
-    if valid_header:
-        return headers_come_in_pair(first_row)
-    else:
-        return valid_header
-   
+
+    # proof obligation
+    proof_obligation_sheet = read_excel_file(XLSC_FILE_PATH, po_sheet_name)
+    first_row_po_sheet = next(proof_obligation_sheet.iter_rows(values_only=True, max_row=1)) # headers ROW for PO Sheet
+    valid_header_PO = is_valid_header(first_row_po_sheet, grade_component_list) # valid headers for Proof obligation
+    pairs_PO = headers_come_in_pair(first_row_po_sheet)
+    
+    if not valid_header_PO or not pairs_PO:
+        if not valid_header_PO:
+            print(f"Error: `{po_sheet_name}` sheet does not have valid headers.")
         
+        if not pairs_PO:
+            print(f"Error: `{po_sheet_name}` sheet does not come in pairs.")
+        return False
+
+    # context
+    contxt_sheet = read_excel_file(XLSC_FILE_PATH, c_sheet_name)
+    first_row_c_sheet = next(contxt_sheet.iter_rows(values_only=True, max_row=1)) # headers ROW for context Sheet
+    valid_header_c = is_valid_header(first_row_c_sheet, grade_component_list) # valid headers for context
+    pairs_c = headers_come_in_pair(first_row_c_sheet)
+    if not valid_header_c or not pairs_c:
+        if not valid_header_c:
+            print(f"Error: `{c_sheet_name}` sheet does not have valid headers.")
+        
+        if not pairs_c:
+            print(f"Error: `{c_sheet_name}` sheet does not come in pairs.")
+        return False
+    
+    # machine
+    machine_sheet = read_excel_file(XLSC_FILE_PATH, m_sheet_name)
+    first_row_m_sheet = next(machine_sheet.iter_rows(values_only=True, max_row=1)) # headers ROW for context Sheet
+    valid_header_m = is_valid_header(first_row_m_sheet, grade_component_list) # valid headers for context
+    pairs_m = headers_come_in_pair(first_row_m_sheet)
+    
+    if not valid_header_m or not pairs_m:
+        if not valid_header_m:
+            print(f"Error: `{m_sheet_name}` sheet does not have valid headers.")
+        
+        if not pairs_m:
+            print(f"Error: `{m_sheet_name}` sheet does not come in pairs.")
+        return False
+    
+    return True
+
+
+
 # Given a row, return true if its a grading component.
 # a row is a grading component if its first col's value is a string and it's second col's value is an integer.
 def is_a_grading_component(row):
@@ -95,8 +131,7 @@ def is_valid_header(headers_tuple, grading_component_list):
         if current_grading_component not in grading_component_list:
             print(f"Error: '{current_grading_component}' is not a valid grading component.")
             return False
-        else:
-            return True
+    return True
 
 def headers_come_in_pair(headers_tuple):
     # Skip the first column and check the rest in pairs
@@ -106,7 +141,7 @@ def headers_come_in_pair(headers_tuple):
 
         # Check if the second element of the pair is "TA Comment"
         if ta_comment != constants.TA_COMMENT_HEADER_NAME:
-            print(f"Error: '{grading_component}' is not followed by {constants.TA_COMMENT_HEADER_NAME}.")
+            print(f"Error: '{grading_component}' is not followed by `{constants.TA_COMMENT_HEADER_NAME}` column.")
             return False
 
     # print(f"All grading components are correctly followed by {constants.TA_COMMENT_HEADER_NAME}.")
