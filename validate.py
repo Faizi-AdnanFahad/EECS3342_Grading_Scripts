@@ -1,11 +1,11 @@
 import openpyxl
-import sys
+import constants
 
-XLSC_FILE_PATH = './input_files/EECS3342-F24-ProgTest1a-TA-Grading-Sheet.xlsx'  # Replace with your Excel file path
-MARKING_SCHEME_NAME = 'Marking Scheme - ProgTest1a'
-PROOF_OBLIGATION_SHEET_NAME = 'Proof Obligations'
-CONTEXT_SHEET_NAME = 'Context C0A'
-MACHINE_SHEET_NAME = 'Machine EnrollmentA'
+XLSC_FILE_PATH = constants.XLSC_FILE_PATH
+MARKING_SCHEME_SHEET_NAME = constants.MARKING_SCHEME_SHEET_NAME
+PROOF_OBLIGATION_SHEET_NAME = constants.PROOF_OBLIGATION_SHEET_NAME
+CONTEXT_SHEET_NAME = constants.CONTEXT_SHEET_NAME
+MACHINE_SHEET_NAME = constants.MACHINE_SHEET_NAME
 
 # Given a file path and a sheet name, this function returns the sheet object.
 def read_excel_file(file_path, sheet_name):
@@ -79,7 +79,7 @@ def getEECSLogins(sheet):
 
 
 if __name__ == "__main__":
-        assumption1 = check_assumption1(MARKING_SCHEME_NAME)
+        assumption1 = check_assumption1(MARKING_SCHEME_SHEET_NAME)
         print(f"assumption 1: {assumption1}")
         print("==========================================================")
         assumption2 = check_assumption2(PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
