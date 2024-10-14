@@ -1,17 +1,13 @@
 import openpyxl
 import sys
 
-# Function to read an Excel file and iterate over its rows
+# Given a file path and a sheet name, this function returns the sheet object.
 def read_excel_file(file_path, sheet_name):
     try:
         # Load the workbook and select the specified sheet
         workbook = openpyxl.load_workbook(file_path)
         sheet = workbook[sheet_name]
-        
-        # Iterate over the rows in the sheet (excluding the header row if necessary)
         return sheet;
-
-                
     except FileNotFoundError:
         print(f"Error: The file '{file_path}' was not found.")
     except KeyError:
@@ -20,20 +16,25 @@ def read_excel_file(file_path, sheet_name):
         print(f"An error occurred: {e}")
         
 
+# assumption 1: 
+# Checks the assumption that the assigned marks for all grading components add up to TOTAL_MARK=100
 def check_assumption1():
+    TOTAL_MARK = 100
     sheet = read_excel_file(file_path, sheet_name)
      
     subtotal = 0
     for row in sheet.iter_rows(values_only=True):
         if is_a_grading_component(row):    
             specifiedGrade = row[1]
-            subtotal += specifiedGrade
+            subtotal += specifiedGrade 
             
-    if subtotal != 100:
+    if subtotal != TOTAL_MARK:
         return False
     else:
         return True
 
+# Given a row, return true if its a grading component.
+# a row is a grading component if its first col's value is a string and it's second col's value is an integer.
 def is_a_grading_component(row):
     col1 = row[0]
     col2 = row[1]
@@ -45,7 +46,6 @@ def is_a_grading_component(row):
 
 
 if __name__ == "__main__":
-        # Example usage:
         file_path = './input_files/EECS3342-F24-ProgTest1a-TA-Grading-Sheet.xlsx'  # Replace with your Excel file path
         sheet_name = 'Marking Scheme - ProgTest1a'       # Replace with your desired sheet name
         # Call the function to read the Excel file
