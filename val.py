@@ -21,17 +21,23 @@ def read_excel_file(file_path, sheet_name):
         
 
 def check_assumption1():
-     sheet = read_excel_file(file_path, sheet_name)
+    sheet = read_excel_file(file_path, sheet_name)
      
-     for row in sheet.iter_rows(values_only=True):
-          if is_a_grading_component(row):
-             print(row)
-
+    subtotal = 0
+    for row in sheet.iter_rows(values_only=True):
+        if is_a_grading_component(row):    
+            specifiedGrade = row[1]
+            subtotal += specifiedGrade
+            
+    if subtotal != 100:
+        return False
+    else:
+        return True
 
 def is_a_grading_component(row):
     col1 = row[0]
     col2 = row[1]
-    if isinstance(col1, str) and isinstance(col2, float):
+    if isinstance(col1, str) and isinstance(col2, int):
          return True
     else:
          return False
@@ -44,5 +50,5 @@ if __name__ == "__main__":
         sheet_name = 'Marking Scheme - ProgTest1a'       # Replace with your desired sheet name
         # Call the function to read the Excel file
         
-        check_assumption1()
-        
+        assumption1 = check_assumption1()
+        print("assumption 1: ", assumption1)
