@@ -56,7 +56,7 @@ def check_assumption2(po_sheet_name, c_sheet_name, m_sheet_name):
 
 
 def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_name):
-    grade_component_list = get_grade_component_list(m_scheme_sheet_name)
+    grade_component_list = list(get_grading_component_mapping(m_scheme_sheet_name).keys())
 
     # proof obligation
     proof_obligation_sheet = read_excel_file(XLSC_FILE_PATH, po_sheet_name)
@@ -100,8 +100,6 @@ def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
         return False
     
     return True
-
-
 
 # Given a row, return true if its a grading component.
 # a row is a grading component if its first col's value is a string and it's second col's value is an integer.
@@ -147,17 +145,24 @@ def headers_come_in_pair(headers_tuple):
     # print(f"All grading components are correctly followed by {constants.TA_COMMENT_HEADER_NAME}.")
     return True
 
-# Given a marking scheme, if its a grading component (check grading component function to see the requirement),
-# this function will append the grading_component_name into a list and returns the accumulated final list.
-def get_grade_component_list(m_scheme_sheet_name):
-    grade_components = []
+
+# helper
+# mapping of grading component -> Max numerical mark
+def get_grading_component_mapping(m_scheme_sheet_name):
+    grade_component_dict = {}
     marking_scheme_sheet = read_excel_file(XLSC_FILE_PATH, m_scheme_sheet_name)
     for row in marking_scheme_sheet.iter_rows(values_only=True):
         if is_a_grading_component(row):
             grade_component_name = row[0]
-            grade_components.append(grade_component_name)
+            assigned_mark = row[1]
+            # If the key already exists in the dictionary, append the item to the list
+            if grade_component_name in grade_component_dict:
+                grade_component_dict[grade_component_name].append(assigned_mark)
+            # If the key does not exist, create a new list with the item
+            else:
+                grade_component_dict[grade_component_name] = [assigned_mark]
     
-    return grade_components
+    return grade_component_dict
 
 if __name__ == "__main__":
         assumption1 = check_assumption1(MARKING_SCHEME_SHEET_NAME)
@@ -169,3 +174,5 @@ if __name__ == "__main__":
         assumption3 = check_assumption3(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
         print("assumption 3: ", assumption3)
         print("==========================================================")
+        
+        # print(get_grading_component_mapping(MARKING_SCHEME_SHEET_NAME))
