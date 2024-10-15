@@ -1,5 +1,6 @@
 import openpyxl
 import constants
+import helper
 
 XLSC_FILE_PATH = constants.XLSC_FILE_PATH
 MARKING_SCHEME_SHEET_NAME = constants.MARKING_SCHEME_SHEET_NAME
@@ -7,26 +8,11 @@ PROOF_OBLIGATION_SHEET_NAME = constants.PROOF_OBLIGATION_SHEET_NAME
 CONTEXT_SHEET_NAME = constants.CONTEXT_SHEET_NAME
 MACHINE_SHEET_NAME = constants.MACHINE_SHEET_NAME
 
-# Given a file path and a sheet name, this function returns the sheet object.
-def read_excel_file(file_path, sheet_name):
-    try:
-        # Load the workbook and select the specified sheet
-        workbook = openpyxl.load_workbook(file_path)
-        sheet = workbook[sheet_name]
-        return sheet;
-    except FileNotFoundError:
-        print(f"Error: The file '{file_path}' was not found.")
-    except KeyError:
-        print(f"Error: The sheet '{sheet_name}' does not exist in the workbook.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        
-
 # assumption 1: 
 # Checks the assumption that the assigned marks for all grading components add up to TOTAL_MARK=100
 def check_assumption1(sheet_name):
     TOTAL_MARK = 100
-    marking_scheme_sheet = read_excel_file(XLSC_FILE_PATH, sheet_name)
+    marking_scheme_sheet = helper.read_excel_file(XLSC_FILE_PATH, sheet_name)
      
     subtotal = 0
     for row in marking_scheme_sheet.iter_rows(values_only=True):
@@ -43,14 +29,14 @@ def check_assumption1(sheet_name):
 # Assuming that the 1st column contains the EECS logins of all students taking that version of test.
 # This function returns true if the 1st columns of all three sheets is identical, false otherwise.
 def check_assumption2(po_sheet_name, c_sheet_name, m_sheet_name):
-    proof_obligation_sheet = read_excel_file(XLSC_FILE_PATH, po_sheet_name)
-    context_sheet = read_excel_file(XLSC_FILE_PATH, c_sheet_name)
-    machine_sheet = read_excel_file(XLSC_FILE_PATH, m_sheet_name)
+    proof_obligation_sheet = helper.read_excel_file(XLSC_FILE_PATH, po_sheet_name)
+    context_sheet = helper.read_excel_file(XLSC_FILE_PATH, c_sheet_name)
+    machine_sheet = helper.read_excel_file(XLSC_FILE_PATH, m_sheet_name)
     
     # get the list of eecs logins in each sheet
-    eecs_logins_from_PO = getEECSLogins(proof_obligation_sheet)
-    eecs_logins_from_context = getEECSLogins(context_sheet)
-    eecs_logins_from_machine = getEECSLogins(machine_sheet)
+    eecs_logins_from_PO = helper.getEECSLogins(proof_obligation_sheet)
+    eecs_logins_from_context = helper.getEECSLogins(context_sheet)
+    eecs_logins_from_machine = helper.getEECSLogins(machine_sheet)
     
     return eecs_logins_from_PO == eecs_logins_from_context == eecs_logins_from_machine
 
@@ -59,7 +45,7 @@ def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
     grade_component_list = list(get_grading_component_mapping(m_scheme_sheet_name).keys())
 
     # proof obligation
-    proof_obligation_sheet = read_excel_file(XLSC_FILE_PATH, po_sheet_name)
+    proof_obligation_sheet = helper.read_excel_file(XLSC_FILE_PATH, po_sheet_name)
     first_row_po_sheet = next(proof_obligation_sheet.iter_rows(values_only=True, max_row=1)) # headers ROW for PO Sheet
     valid_header_PO = is_valid_header(first_row_po_sheet, grade_component_list) # valid headers for Proof obligation
     pairs_PO = headers_come_in_pair(first_row_po_sheet)
@@ -73,7 +59,7 @@ def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
         return False
 
     # context
-    contxt_sheet = read_excel_file(XLSC_FILE_PATH, c_sheet_name)
+    contxt_sheet = helper.read_excel_file(XLSC_FILE_PATH, c_sheet_name)
     first_row_c_sheet = next(contxt_sheet.iter_rows(values_only=True, max_row=1)) # headers ROW for context Sheet
     valid_header_c = is_valid_header(first_row_c_sheet, grade_component_list) # valid headers for context
     pairs_c = headers_come_in_pair(first_row_c_sheet)
@@ -86,7 +72,7 @@ def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
         return False
     
     # machine
-    machine_sheet = read_excel_file(XLSC_FILE_PATH, m_sheet_name)
+    machine_sheet = helper.read_excel_file(XLSC_FILE_PATH, m_sheet_name)
     first_row_m_sheet = next(machine_sheet.iter_rows(values_only=True, max_row=1)) # headers ROW for context Sheet
     valid_header_m = is_valid_header(first_row_m_sheet, grade_component_list) # valid headers for context
     pairs_m = headers_come_in_pair(first_row_m_sheet)
@@ -105,9 +91,9 @@ def check_assumption4(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
     # get all of the xlsx sheets
     grade_comp_to_grade = get_grading_component_mapping(m_scheme_sheet_name)    
 
-    proof_obligation_sheet = read_excel_file(XLSC_FILE_PATH, po_sheet_name)
-    context_sheet = read_excel_file(XLSC_FILE_PATH, c_sheet_name)
-    machine_sheet = read_excel_file(XLSC_FILE_PATH, m_sheet_name)
+    proof_obligation_sheet = helper.read_excel_file(XLSC_FILE_PATH, po_sheet_name)
+    context_sheet = helper.read_excel_file(XLSC_FILE_PATH, c_sheet_name)
+    machine_sheet = helper.read_excel_file(XLSC_FILE_PATH, m_sheet_name)
     
     po_sheet_constrained = is_specified_grade_constrained(proof_obligation_sheet, grade_comp_to_grade)
     c_sheet_constrained = is_specified_grade_constrained(context_sheet, grade_comp_to_grade)
@@ -143,16 +129,6 @@ def is_specified_grade_constrained(sheet, grade_comp_to_grade):
                     
     return allConstrained_PO
 
-
-
-
-
-
-
-
-
-
-
 # Given a row, return true if its a grading component.
 # a row is a grading component if its first col's value is a string and it's second col's value is an float.
 def is_a_grading_component(row):
@@ -166,18 +142,6 @@ def is_a_grading_component(row):
          return True
     else:
          return False
-
-# Helper Method
-# Given a sheet name, this function iterates over each row in the first column of `sheet` 
-# which is assumed to have the eecs logins and acummulate them to return a list of eecs logins
-def getEECSLogins(sheet):
-    eecs_logins_from_PO = []
-    for row in sheet.iter_rows(values_only=True):
-        if any(value is not None for value in row):
-            col1 = row[0]
-            if col1 != "EECS Login": #if actual logins, add it to the list obtained from the first cheetsheet
-                eecs_logins_from_PO.append(col1)
-    return eecs_logins_from_PO
 
 def is_valid_header(headers_tuple, grading_component_list):
     for i in range(1, len(headers_tuple) - 1, 2):
@@ -206,7 +170,7 @@ def headers_come_in_pair(headers_tuple):
 # mapping of grading component -> Max numerical mark
 def get_grading_component_mapping(m_scheme_sheet_name):
     grade_component_dict = {}
-    marking_scheme_sheet = read_excel_file(XLSC_FILE_PATH, m_scheme_sheet_name)
+    marking_scheme_sheet = helper.read_excel_file(XLSC_FILE_PATH, m_scheme_sheet_name)
     for row in marking_scheme_sheet.iter_rows(values_only=True):
         if is_a_grading_component(row):
             grade_component_name = row[constants.GRADING_COMP_COLUMN]
