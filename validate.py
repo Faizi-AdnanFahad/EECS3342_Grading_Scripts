@@ -16,7 +16,7 @@ def check_assumption1(sheet_name):
      
     subtotal = 0
     for row in marking_scheme_sheet.iter_rows(values_only=True):
-        if is_a_grading_component(row):    
+        if helper.is_a_grading_component(row):    
             specifiedGrade = row[constants.SPECIFIED_GRADE_COLUMN]
             subtotal += specifiedGrade 
     
@@ -42,7 +42,7 @@ def check_assumption2(po_sheet_name, c_sheet_name, m_sheet_name):
 
 
 def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_name):
-    grade_component_list = list(get_grading_component_mapping(m_scheme_sheet_name).keys())
+    grade_component_list = list(helper.get_grading_component_mapping(m_scheme_sheet_name).keys())
 
     # proof obligation
     proof_obligation_sheet = helper.read_excel_file(XLSC_FILE_PATH, po_sheet_name)
@@ -89,7 +89,7 @@ def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
 
 def check_assumption4(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_name):
     # get all of the xlsx sheets
-    grade_comp_to_grade = get_grading_component_mapping(m_scheme_sheet_name)    
+    grade_comp_to_grade = helper.get_grading_component_mapping(m_scheme_sheet_name)    
 
     proof_obligation_sheet = helper.read_excel_file(XLSC_FILE_PATH, po_sheet_name)
     context_sheet = helper.read_excel_file(XLSC_FILE_PATH, c_sheet_name)
@@ -129,19 +129,6 @@ def is_specified_grade_constrained(sheet, grade_comp_to_grade):
                     
     return allConstrained_PO
 
-# Given a row, return true if its a grading component.
-# a row is a grading component if its first col's value is a string and it's second col's value is an float.
-def is_a_grading_component(row):
-    grading_component = row[constants.GRADING_COMP_COLUMN]
-    specified_grade = row[constants.SPECIFIED_GRADE_COLUMN]
-    
-    if isinstance(specified_grade, int):
-        specified_grade = float(specified_grade)
-        
-    if isinstance(grading_component, str) and isinstance(specified_grade, float):
-         return True
-    else:
-         return False
 
 def is_valid_header(headers_tuple, grading_component_list):
     for i in range(1, len(headers_tuple) - 1, 2):
@@ -166,24 +153,6 @@ def headers_come_in_pair(headers_tuple):
     return True
 
 
-# helper
-# mapping of grading component -> Max numerical mark
-def get_grading_component_mapping(m_scheme_sheet_name):
-    grade_component_dict = {}
-    marking_scheme_sheet = helper.read_excel_file(XLSC_FILE_PATH, m_scheme_sheet_name)
-    for row in marking_scheme_sheet.iter_rows(values_only=True):
-        if is_a_grading_component(row):
-            grade_component_name = row[constants.GRADING_COMP_COLUMN]
-            assigned_mark = row[constants.SPECIFIED_GRADE_COLUMN]
-            # If the key already exists in the dictionary, append the item to the list
-            if grade_component_name in grade_component_dict:
-                grade_component_dict[grade_component_name].append(assigned_mark)
-            # If the key does not exist, create a new list with the item
-            else:
-                grade_component_dict[grade_component_name] = [assigned_mark]
-    
-    return grade_component_dict
-
 if __name__ == "__main__":
         assumption1 = check_assumption1(MARKING_SCHEME_SHEET_NAME)
         print(f"assumption 1: {assumption1}")
@@ -197,4 +166,4 @@ if __name__ == "__main__":
         assumption4 = check_assumption4(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
         print("assumption 4: ", assumption4)
         print("==========================================================")
-        # print(get_grading_component_mapping(MARKING_SCHEME_SHEET_NAME))
+        # print(helper.get_grading_component_mapping(MARKING_SCHEME_SHEET_NAME))

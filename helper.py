@@ -30,3 +30,35 @@ def getEECSLogins(sheet):
             if col1 != "EECS Login": #if actual logins, add it to the list obtained from the first cheetsheet
                 eecs_logins_from_PO.append(col1)
     return eecs_logins_from_PO
+
+# helper
+# mapping of grading component -> Max numerical mark
+def get_grading_component_mapping(m_scheme_sheet_name):
+    grade_component_dict = {}
+    marking_scheme_sheet = read_excel_file(XLSC_FILE_PATH, m_scheme_sheet_name)
+    for row in marking_scheme_sheet.iter_rows(values_only=True):
+        if is_a_grading_component(row):
+            grade_component_name = row[constants.GRADING_COMP_COLUMN]
+            assigned_mark = row[constants.SPECIFIED_GRADE_COLUMN]
+            # If the key already exists in the dictionary, append the item to the list
+            if grade_component_name in grade_component_dict:
+                grade_component_dict[grade_component_name].append(assigned_mark)
+            # If the key does not exist, create a new list with the item
+            else:
+                grade_component_dict[grade_component_name] = [assigned_mark]
+    
+    return grade_component_dict
+
+# Given a row, return true if its a grading component.
+# a row is a grading component if its first col's value is a string and it's second col's value is an float.
+def is_a_grading_component(row):
+    grading_component = row[constants.GRADING_COMP_COLUMN]
+    specified_grade = row[constants.SPECIFIED_GRADE_COLUMN]
+    
+    if isinstance(specified_grade, int):
+        specified_grade = float(specified_grade)
+        
+    if isinstance(grading_component, str) and isinstance(specified_grade, float):
+         return True
+    else:
+         return False
