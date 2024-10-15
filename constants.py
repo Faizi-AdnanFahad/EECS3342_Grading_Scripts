@@ -18,3 +18,6 @@ TA_COMMENT_HEADER_NAME = "TA Comment"
 # Some Special Row and Column Numbers
 GRADING_COMP_COLUMN = 0
 SPECIFIED_GRADE_COLUMN = 2
+
+# total marks
+PROOF_OBLIGATION_TOTAL_MARK = 15
