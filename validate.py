@@ -109,6 +109,27 @@ def check_assumption4(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
         return False
     return True
 
+# grades = {"studentlogin": {"thm1/THM": 1}}
+def get_grade_for_students(sheet):
+    grades = {}
+    
+    header_row = next(sheet.iter_rows(min_row=1, max_row=1, min_col=1, values_only=True)) 
+    
+    # skip the header row'    
+    for row in sheet.iter_rows(min_row=2, min_col=1, values_only=True):
+        if any(value is not None for value in row): # if all value of the row is not NONE
+            for i in range(1, len(row), 2):
+                student_login = row[0] # student login assumed to be in column 1 as per assumption1
+                grading_comp = header_row[i]
+                given_grade = row[i]
+                
+                comp_to_grade = {}
+                comp_to_grade[grading_comp] = given_grade
+                
+                grades[student_login] = comp_to_grade
+                
+    return grades
+
 def is_specified_grade_constrained(sheet, grade_comp_to_grade):
     header_row = next(sheet.iter_rows(min_row=1, max_row=1, min_col=1, values_only=True)) 
     allConstrained_PO = True
@@ -154,16 +175,17 @@ def headers_come_in_pair(headers_tuple):
 
 
 if __name__ == "__main__":
-        assumption1 = check_assumption1(MARKING_SCHEME_SHEET_NAME)
-        print(f"assumption 1: {assumption1}")
-        print("==========================================================")
-        assumption2 = check_assumption2(PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
-        print("assumption 2: ", assumption2)
-        print("==========================================================")
-        assumption3 = check_assumption3(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
-        print("assumption 3: ", assumption3)
-        print("==========================================================")
-        assumption4 = check_assumption4(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
-        print("assumption 4: ", assumption4)
-        print("==========================================================")
+        # assumption1 = check_assumption1(MARKING_SCHEME_SHEET_NAME)
+        # print(f"assumption 1: {assumption1}")
+        # print("==========================================================")
+        # assumption2 = check_assumption2(PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
+        # print("assumption 2: ", assumption2)
+        # print("==========================================================")
+        # assumption3 = check_assumption3(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
+        # print("assumption 3: ", assumption3)
+        # print("==========================================================")
+        # assumption4 = check_assumption4(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
+        # print("assumption 4: ", assumption4)
+        # print("==========================================================")
         # print(helper.get_grading_component_mapping(MARKING_SCHEME_SHEET_NAME))
+        get_grade_for_students(helper.read_excel_file(constants.XLSC_FILE_PATH, constants.PROOF_OBLIGATION_SHEET_NAME))
