@@ -31,9 +31,9 @@ def check_assumption1(sheet_name):
     subtotal = 0
     for row in marking_scheme_sheet.iter_rows(values_only=True):
         if is_a_grading_component(row):    
-            specifiedGrade = row[1]
+            specifiedGrade = row[constants.SPECIFIED_GRADE_COLUMN]
             subtotal += specifiedGrade 
-            
+    
     if subtotal != TOTAL_MARK:
         return False
     else:
@@ -101,12 +101,68 @@ def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
     
     return True
 
+def check_assumption4(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_name):
+    # get all of the xlsx sheets
+    grade_comp_to_grade = get_grading_component_mapping(m_scheme_sheet_name)    
+
+    proof_obligation_sheet = read_excel_file(XLSC_FILE_PATH, po_sheet_name)
+    context_sheet = read_excel_file(XLSC_FILE_PATH, c_sheet_name)
+    machine_sheet = read_excel_file(XLSC_FILE_PATH, m_sheet_name)
+    
+    po_sheet_constrained = is_specified_grade_constrained(proof_obligation_sheet, grade_comp_to_grade)
+    c_sheet_constrained = is_specified_grade_constrained(context_sheet, grade_comp_to_grade)
+    m_sheet_constrained = is_specified_grade_constrained(machine_sheet, grade_comp_to_grade)
+
+    if not po_sheet_constrained or not c_sheet_constrained or not m_sheet_constrained:
+        if not po_sheet_constrained:
+            print(f"Error: Given mark in `{po_sheet_name}` sheet, is outside of the specified mark in `{m_scheme_sheet_name}` sheet.")
+        if not c_sheet_constrained:
+            print(f"Error: Given mark in `{c_sheet_name}` sheet, is outside of the specified mark in `{m_scheme_sheet_name}` sheet.")
+        if not m_sheet_constrained:
+            print(f"Error: Given mark in `{m_sheet_name}` sheet, is outside of the specified mark in `{m_scheme_sheet_name}` sheet.")
+        return False
+    return True
+
+def is_specified_grade_constrained(sheet, grade_comp_to_grade):
+    header_row = next(sheet.iter_rows(min_row=1, max_row=1, min_col=1, values_only=True)) 
+    allConstrained_PO = True
+
+    # skip the header row'    
+    for row in sheet.iter_rows(min_row=2, min_col=1, values_only=True):
+        if any(value is not None for value in row): # if all value of the row is not NONE
+            for i in range(1, len(row), 2):
+                grading_comp = header_row[i]
+                given_grade = row[i]
+                
+                specified_grade = grade_comp_to_grade.get(grading_comp)[0] # the returned will always be a list of
+                if 0 <= given_grade and given_grade <= specified_grade:
+                    continue
+                else:
+                    print(f"Error: Grade given for studnet `{row[0]}` is outside the allowable grade for ({grading_comp} -> {given_grade})")
+                    allConstrained_PO = False
+                    
+    return allConstrained_PO
+
+
+
+
+
+
+
+
+
+
+
 # Given a row, return true if its a grading component.
-# a row is a grading component if its first col's value is a string and it's second col's value is an integer.
+# a row is a grading component if its first col's value is a string and it's second col's value is an float.
 def is_a_grading_component(row):
-    col1 = row[0]
-    col2 = row[1]
-    if isinstance(col1, str) and isinstance(col2, int):
+    grading_component = row[constants.GRADING_COMP_COLUMN]
+    specified_grade = row[constants.SPECIFIED_GRADE_COLUMN]
+    
+    if isinstance(specified_grade, int):
+        specified_grade = float(specified_grade)
+        
+    if isinstance(grading_component, str) and isinstance(specified_grade, float):
          return True
     else:
          return False
@@ -153,8 +209,8 @@ def get_grading_component_mapping(m_scheme_sheet_name):
     marking_scheme_sheet = read_excel_file(XLSC_FILE_PATH, m_scheme_sheet_name)
     for row in marking_scheme_sheet.iter_rows(values_only=True):
         if is_a_grading_component(row):
-            grade_component_name = row[0]
-            assigned_mark = row[1]
+            grade_component_name = row[constants.GRADING_COMP_COLUMN]
+            assigned_mark = row[constants.SPECIFIED_GRADE_COLUMN]
             # If the key already exists in the dictionary, append the item to the list
             if grade_component_name in grade_component_dict:
                 grade_component_dict[grade_component_name].append(assigned_mark)
@@ -174,5 +230,7 @@ if __name__ == "__main__":
         assumption3 = check_assumption3(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
         print("assumption 3: ", assumption3)
         print("==========================================================")
-        
+        assumption4 = check_assumption4(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
+        print("assumption 4: ", assumption4)
+        print("==========================================================")
         # print(get_grading_component_mapping(MARKING_SCHEME_SHEET_NAME))

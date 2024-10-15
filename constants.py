@@ -1,6 +1,6 @@
 # define any new constants here or modify the constant values to match your system variables.
 
-XLSC_FILE_PATH = './input_files/EECS3342-F24-ProgTest1a-TA-Grading-Sheet.xlsx'  # Replace with your Excel file path
+XLSC_FILE_PATH = './input_files/EECS3342-F24-ProgTest1a-Grading-Sheet.xlsx'  # Replace with your Excel file path
 
 # sheet names
 MARKING_SCHEME_SHEET_NAME = 'Marking Scheme - ProgTest1a'
@@ -10,3 +10,7 @@ MACHINE_SHEET_NAME = 'Machine EnrollmentA'
 
 # other useful Constants
 TA_COMMENT_HEADER_NAME = "TA Comment"
+
+# Some Special Row and Column Numbers
+GRADING_COMP_COLUMN = 0
+SPECIFIED_GRADE_COLUMN = 2
