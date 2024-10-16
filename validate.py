@@ -34,9 +34,9 @@ def check_assumption2(po_sheet_name, c_sheet_name, m_sheet_name):
     machine_sheet = helper.read_excel_file(XLSC_FILE_PATH, m_sheet_name)
     
     # get the list of eecs logins in each sheet
-    eecs_logins_from_PO = helper.getEECSLogins(proof_obligation_sheet)
-    eecs_logins_from_context = helper.getEECSLogins(context_sheet)
-    eecs_logins_from_machine = helper.getEECSLogins(machine_sheet)
+    eecs_logins_from_PO = helper.get_eecs_logins(proof_obligation_sheet)
+    eecs_logins_from_context = helper.get_eecs_logins(context_sheet)
+    eecs_logins_from_machine = helper.get_eecs_logins(machine_sheet)
     
     return eecs_logins_from_PO == eecs_logins_from_context == eecs_logins_from_machine
 
@@ -143,11 +143,9 @@ if __name__ == "__main__":
         # assumption3 = check_assumption3(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
         # print("assumption 3: ", assumption3)
         # print("==========================================================")
-        assumption4 = check_assumption4(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
-        print("assumption 4: ", assumption4)
+        # assumption4 = check_assumption4(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
+        # print("assumption 4: ", assumption4)
         # print("==========================================================")
         # print(helper.get_grading_component_mapping(MARKING_SCHEME_SHEET_NAME))]
         print("hi")
-        # grades = get_grade_for_students(helper.read_excel_file(constants.XLSC_FILE_PATH, constants.PROOF_OBLIGATION_SHEET_NAME))
-        # print(grades)
-        # print(grades['aliverdi'])
+        # print(helper.get_total_mark("abhir37", helper.read_excel_file(constants.XLSC_FILE_PATH, constants.PROOF_OBLIGATION_SHEET_NAME)))
