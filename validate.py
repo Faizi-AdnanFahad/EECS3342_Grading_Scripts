@@ -95,9 +95,9 @@ def check_assumption4(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
     context_sheet = helper.read_excel_file(XLSC_FILE_PATH, c_sheet_name)
     machine_sheet = helper.read_excel_file(XLSC_FILE_PATH, m_sheet_name)
     
-    po_sheet_constrained = is_specified_grade_constrained(proof_obligation_sheet, grade_comp_to_grade)
-    c_sheet_constrained = is_specified_grade_constrained(context_sheet, grade_comp_to_grade)
-    m_sheet_constrained = is_specified_grade_constrained(machine_sheet, grade_comp_to_grade)
+    po_sheet_constrained = helper.is_constrained(proof_obligation_sheet, grade_comp_to_grade)
+    c_sheet_constrained = helper.is_constrained(context_sheet, grade_comp_to_grade)
+    m_sheet_constrained = helper.is_constrained(machine_sheet, grade_comp_to_grade)
 
     if not po_sheet_constrained or not c_sheet_constrained or not m_sheet_constrained:
         if not po_sheet_constrained:
@@ -108,51 +108,6 @@ def check_assumption4(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
             print(f"Error: Given mark in `{m_sheet_name}` sheet, is outside of the specified mark in `{m_scheme_sheet_name}` sheet.")
         return False
     return True
-
-# grades = {"studentlogin": {"thm1/THM": 1, "thm2/THM": 2}}
-def get_grade_for_students(sheet):
-    grades = {}
-    
-    header_row = next(sheet.iter_rows(min_row=1, max_row=1, min_col=1, values_only=True)) 
-    
-    # skip the header row'    
-    for row in sheet.iter_rows(min_row=2, min_col=1, values_only=True):
-        if any(value is not None for value in row): # if all value of the row is not NONE
-            for i in range(1, len(row), 2):
-                student_login = row[0] # student login assumed to be in column 1 as per assumption1
-                grading_comp = header_row[i]
-                given_grade = row[i]
-                
-                if student_login not in grades:
-                    initial_grade = {}
-                    initial_grade[grading_comp] = given_grade
-                    grades[student_login] = initial_grade
-                else:
-                    existing_grades = grades[student_login]
-                    if grading_comp not in existing_grades:
-                        existing_grades[grading_comp] = given_grade
-                
-    return grades
-
-def is_specified_grade_constrained(sheet, grade_comp_to_grade):
-    header_row = next(sheet.iter_rows(min_row=1, max_row=1, min_col=1, values_only=True)) 
-    allConstrained_PO = True
-
-    # skip the header row'    
-    for row in sheet.iter_rows(min_row=2, min_col=1, values_only=True):
-        if any(value is not None for value in row): # if all value of the row is not NONE
-            for i in range(1, len(row), 2):
-                grading_comp = header_row[i]
-                given_grade = row[i]
-                
-                specified_grade = grade_comp_to_grade.get(grading_comp)[0] # the returned will always be a list of
-                if 0 <= given_grade and given_grade <= specified_grade:
-                    continue
-                else:
-                    print(f"Error: Grade given for studnet `{row[0]}` is outside the allowable grade for ({grading_comp} -> {given_grade})")
-                    allConstrained_PO = False
-                    
-    return allConstrained_PO
 
 
 def is_valid_header(headers_tuple, grading_component_list):
@@ -188,11 +143,11 @@ if __name__ == "__main__":
         # assumption3 = check_assumption3(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
         # print("assumption 3: ", assumption3)
         # print("==========================================================")
-        # assumption4 = check_assumption4(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
-        # print("assumption 4: ", assumption4)
+        assumption4 = check_assumption4(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
+        print("assumption 4: ", assumption4)
         # print("==========================================================")
         # print(helper.get_grading_component_mapping(MARKING_SCHEME_SHEET_NAME))]
         print("hi")
-        grades = get_grade_for_students(helper.read_excel_file(constants.XLSC_FILE_PATH, constants.PROOF_OBLIGATION_SHEET_NAME))
+        # grades = get_grade_for_students(helper.read_excel_file(constants.XLSC_FILE_PATH, constants.PROOF_OBLIGATION_SHEET_NAME))
         # print(grades)
-        print(grades['aliverdi'])
+        # print(grades['aliverdi'])

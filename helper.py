@@ -62,3 +62,45 @@ def is_a_grading_component(row):
          return True
     else:
          return False
+    
+# Given a sheet object, this function returns a datastructure that will include the list of all eecs_logins for students
+# alongside a mapping of the grading components and the given mark to them in the following format.
+# grades = {"studentlogin1": {"thm1/THM": 1, "thm2/THM": 2, ...}, "studentlogin2": {"thm1/THM": 1, "thm2/THM": 2, ...}...}
+def get_grade_for_students(sheet):
+    grades = {}
+    
+    header_row = next(sheet.iter_rows(min_row=1, max_row=1, min_col=1, values_only=True)) 
+    
+    # skip the header row'    
+    for row in sheet.iter_rows(min_row=2, min_col=1, values_only=True):
+        if any(value is not None for value in row): # if all value of the row is not NONE
+            for i in range(1, len(row), 2):
+                student_login = row[0] # student login assumed to be in column 1 as per assumption1
+                grading_comp = header_row[i]
+                given_grade = row[i]
+                
+                if student_login not in grades:
+                    initial_grade = {}
+                    initial_grade[grading_comp] = given_grade
+                    grades[student_login] = initial_grade
+                else:
+                    existing_grades = grades[student_login]
+                    if grading_comp not in existing_grades:
+                        existing_grades[grading_comp] = given_grade
+                
+    return grades
+
+# Given a sheet object and mapping of grading component to specified grades, the function checkes
+# if the given grades are within the constrains of the specified grades
+def is_constrained(sheet, grade_comp_to_grade):
+    grades = get_grade_for_students(sheet)
+    for student_login in grades:
+        grade_comp_to_given_grade_mappings = grades[student_login]
+        for grading_comp, given_grade in grade_comp_to_given_grade_mappings.items():
+            specified_grade = grade_comp_to_grade.get(grading_comp)[0] # the returned will always be a list of
+            if 0 <= given_grade and given_grade <= specified_grade:
+                continue
+            else:
+                print(f"Error: Grade given for studnet `{student_login}` is outside the allowable grade for ({grading_comp} -> {given_grade})")
+                return False
+    return True
