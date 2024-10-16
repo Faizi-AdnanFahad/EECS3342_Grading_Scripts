@@ -109,7 +109,7 @@ def check_assumption4(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
         return False
     return True
 
-# grades = {"studentlogin": {"thm1/THM": 1}}
+# grades = {"studentlogin": {"thm1/THM": 1, "thm2/THM": 2}}
 def get_grade_for_students(sheet):
     grades = {}
     
@@ -123,10 +123,14 @@ def get_grade_for_students(sheet):
                 grading_comp = header_row[i]
                 given_grade = row[i]
                 
-                comp_to_grade = {}
-                comp_to_grade[grading_comp] = given_grade
-                
-                grades[student_login] = comp_to_grade
+                if student_login not in grades:
+                    initial_grade = {}
+                    initial_grade[grading_comp] = given_grade
+                    grades[student_login] = initial_grade
+                else:
+                    existing_grades = grades[student_login]
+                    if grading_comp not in existing_grades:
+                        existing_grades[grading_comp] = given_grade
                 
     return grades
 
@@ -187,5 +191,8 @@ if __name__ == "__main__":
         # assumption4 = check_assumption4(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
         # print("assumption 4: ", assumption4)
         # print("==========================================================")
-        # print(helper.get_grading_component_mapping(MARKING_SCHEME_SHEET_NAME))
-        get_grade_for_students(helper.read_excel_file(constants.XLSC_FILE_PATH, constants.PROOF_OBLIGATION_SHEET_NAME))
+        # print(helper.get_grading_component_mapping(MARKING_SCHEME_SHEET_NAME))]
+        print("hi")
+        grades = get_grade_for_students(helper.read_excel_file(constants.XLSC_FILE_PATH, constants.PROOF_OBLIGATION_SHEET_NAME))
+        # print(grades)
+        print(grades['aliverdi'])
