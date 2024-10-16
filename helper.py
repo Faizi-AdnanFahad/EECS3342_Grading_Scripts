@@ -104,3 +104,11 @@ def is_constrained(sheet, grade_comp_to_grade):
                 print(f"Error: Grade given for studnet `{student_login}` is outside the allowable grade for ({grading_comp} -> {given_grade})")
                 return False
     return True
+
+def get_total_mark(student_login, sheet):
+    grades = get_grade_for_students(sheet)
+    total = 0
+    student_marks = grades[student_login]
+    for given_grade in student_marks.values():
+        total += given_grade
+    return total
