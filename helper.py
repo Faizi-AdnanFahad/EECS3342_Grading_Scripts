@@ -22,7 +22,7 @@ def read_excel_file(file_path, sheet_name):
 # Helper Method
 # Given a sheet name, this function iterates over each row in the first column of `sheet` 
 # which is assumed to have the eecs logins and acummulate them to return a list of eecs logins
-def getEECSLogins(sheet):
+def get_eecs_logins(sheet):
     eecs_logins_from_PO = []
     for row in sheet.iter_rows(values_only=True):
         if any(value is not None for value in row):
@@ -105,8 +105,7 @@ def is_constrained(sheet, grade_comp_to_grade):
                 return False
     return True
 
-def get_total_mark(student_login, sheet):
-    grades = get_grade_for_students(sheet)
+def get_total_mark(student_login, sheet, grades):
     total = 0
     student_marks = grades[student_login]
     for given_grade in student_marks.values():
