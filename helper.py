@@ -66,10 +66,10 @@ def is_a_grading_component(row):
 # Given a sheet object, this function returns a datastructure that will include the list of all eecs_logins for students
 # alongside a mapping of the grading components and the given mark to them in the following format.
 # grades = {"studentlogin1": {"thm1/THM": 1, "thm2/THM": 2, ...}, "studentlogin2": {"thm1/THM": 1, "thm2/THM": 2, ...}...}
-def get_grade_for_students(sheet):
+def get_sheet_data(sheet):
     grades = {}
     
-    header_row = next(sheet.iter_rows(min_row=1, max_row=1, min_col=1, values_only=True)) 
+    header_row = next(sheet.iter_rows(min_row=1, max_row=1, min_col=1, values_only=True))
     
     # skip the header row'    
     for row in sheet.iter_rows(min_row=2, min_col=1, values_only=True):
@@ -78,22 +78,23 @@ def get_grade_for_students(sheet):
                 student_login = row[0] # student login assumed to be in column 1 as per assumption1
                 grading_comp = header_row[i]
                 given_grade = row[i]
-                
+                ta_comment = row[i + 1]            
+
                 if student_login not in grades:
                     initial_grade = {}
-                    initial_grade[grading_comp] = given_grade
+                    initial_grade[grading_comp] = {"given_grade": given_grade, "ta_comment": ta_comment}
                     grades[student_login] = initial_grade
                 else:
                     existing_grades = grades[student_login]
                     if grading_comp not in existing_grades:
-                        existing_grades[grading_comp] = given_grade
+                        existing_grades[grading_comp] = {"given_grade": given_grade, "ta_comment": ta_comment}
                 
     return grades
 
 # Given a sheet object and mapping of grading component to specified grades, the function checkes
 # if the given grades are within the constrains of the specified grades
 def is_constrained(sheet, grade_comp_to_grade):
-    grades = get_grade_for_students(sheet)
+    grades = get_sheet_data(sheet)
     for student_login in grades:
         grade_comp_to_given_grade_mappings = grades[student_login]
         for grading_comp, given_grade in grade_comp_to_given_grade_mappings.items():
@@ -105,9 +106,9 @@ def is_constrained(sheet, grade_comp_to_grade):
                 return False
     return True
 
-def get_total_mark(student_login, sheet, grades):
+def get_total_mark(student_login, grades):
     total = 0
     student_marks = grades[student_login]
     for given_grade in student_marks.values():
-        total += given_grade
+        total += given_grade["given_grade"]
     return total
