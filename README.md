@@ -47,8 +47,9 @@ The main grading process can be run using the following steps:
 
 1. **Prepare Input Data**:
    Place your input files inside the `inputs/` directory. These files will be processed by the scripts.
+   - **constants.py**: Contains global constants used across multiple scripts. Please make sure to modify the values as needed.
 
-2. **Run the grading script**:
+3. **Run the grading script**:
    To run the entire grading process, execute the `run.sh` shell script which triggers all necessary scripts (validation, feedback generation, etc.):
    ```bash
    bash run.sh
