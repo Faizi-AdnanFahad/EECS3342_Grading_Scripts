@@ -1,6 +1,6 @@
 # define any new constants here or modify the constant values to match your system variables.
 
-INPUT_DIRECTORY = "./input_files"
+INPUT_DIRECTORY = "./inputs"
 OUPTUT_DIRECTORY = "./outputs"
 
 XLSC_FILE_PATH = f'{INPUT_DIRECTORY}/EECS3342-F24-ProgTest1a-Grading-Sheet.xlsx'  # Replace with your Excel file path
