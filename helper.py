@@ -92,11 +92,12 @@ def get_sheet_data(sheet):
 # Given a sheet object and mapping of grading component to specified grades, the function checkes
 # if the given grades are within the constrains of the specified grades
 def is_constrained(sheet, grade_comp_to_grade):
-    grades = get_sheet_data(sheet)
-    for student_login in grades:
-        grade_comp_to_given_grade_mappings = grades[student_login]
-        for grading_comp, given_grade in grade_comp_to_given_grade_mappings.items():
-            specified_grade = grade_comp_to_grade.get(grading_comp)[0] # the returned will always be a list of
+    sheet_data = get_sheet_data(sheet)
+    for student_login in sheet_data:
+        grade_comp_to_given_grade_mappings = sheet_data[student_login]
+        for grading_comp, grade_and_ta_comment in grade_comp_to_given_grade_mappings.items():
+            given_grade = grade_and_ta_comment["given_grade"]
+            specified_grade = grade_comp_to_grade.get(grading_comp)["specified_grade"]
             if 0 <= given_grade and given_grade <= specified_grade:
                 continue
             else:
