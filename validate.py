@@ -21,6 +21,7 @@ def check_assumption1(sheet_name):
             subtotal += specifiedGrade
 
     if subtotal != constants.TOTAL_MARKS:
+        print(f"Error: specified grade total is not equal to {constants.TOTAL_MARKS}")
         return False
     else:
         return True
@@ -40,7 +41,12 @@ def check_assumption2(po_sheet_name, c_sheet_name, m_sheet_name):
     eecs_logins_from_context = helper.get_eecs_logins(context_sheet)
     eecs_logins_from_machine = helper.get_eecs_logins(machine_sheet)
 
-    return eecs_logins_from_PO == eecs_logins_from_context == eecs_logins_from_machine
+    if eecs_logins_from_PO == eecs_logins_from_context == eecs_logins_from_machine:
+        return True
+    else:
+        print(f"Error: Student logins aren't identical in all sheets.")
+        return False
+    return 
 
 
 # Assumption 3
@@ -188,4 +194,4 @@ if __name__ == "__main__":
     print("==========================================================")
     
     # used to check if the feedback file should run not
-    print(f"All Assumptions Passed: {all_assumptions_satisifed}")
+    print(f"All Assumptions Passed? {all_assumptions_satisifed}")

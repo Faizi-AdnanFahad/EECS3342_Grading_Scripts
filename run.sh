@@ -11,6 +11,5 @@ if echo $all_assumptions_passed | grep -q $true; then
     # run the feedback marking strings only if all assumptions have been validated
     python3 $feedback_script
 else
-    echo "Please make sure that all assumptions are satisifed first"
+    echo "Feedbacks will not be generated! Please make sure that all assumptions are satisfied first"
 fi
-
