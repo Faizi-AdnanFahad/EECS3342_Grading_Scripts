@@ -13,3 +13,4 @@ if echo $all_assumptions_passed | grep -q $true; then
 else
     echo "Please make sure that all assumptions are satisifed first"
 fi
+

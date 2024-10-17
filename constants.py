@@ -1,10 +1,17 @@
 # define any new constants here or modify the constant values to match your system variables.
 
+# Course Information
+COURSE_NAME = "EECS 3342"
+SEMESTER = "FALL"
+YEAR_OF_TEACHING = "2024"
+TEST_NAME = "Programming Test 1"
+
+# directories
 INPUT_DIRECTORY = "./inputs"
 OUPTUT_DIRECTORY = "./outputs"
 
+#file names
 XLSC_FILE_PATH = f'{INPUT_DIRECTORY}/EECS3342-F24-ProgTest1a-Grading-Sheet.xlsx'  # Replace with your Excel file path
-
 
 # sheet names
 MARKING_SCHEME_SHEET_NAME = 'Marking Scheme - ProgTest1a'
@@ -24,3 +31,4 @@ SPECIFIED_GRADE_COLUMN = 2
 SPECIFIED_PROOF_OBLIGATION_TOTAL_MARK = 15
 SPECIFIED_CONTEXT_TOTAL_MARK = 49
 SPECIFIED_MACHINE_TOTAL_MARK = 36
+TOTAL_MARKS = 100

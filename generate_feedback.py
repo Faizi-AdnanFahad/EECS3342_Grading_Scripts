@@ -23,7 +23,7 @@ if __name__ == "__main__":
     grade_comp_to_specified_grades = helper.get_grading_component_mapping(constants.MARKING_SCHEME_SHEET_NAME)
     # print(grade_comp_to_specified_grades)    
 
-    output_string = "EECS3342 Fall 2024 ProgTest1 Grading Results\n"
+    output_string = f"{constants.COURSE_NAME} {constants.SEMESTER} {constants.YEAR_OF_TEACHING} {constants.TEST_NAME} Grading Results\n"
     
     for student in proof_obligation_data:
         po_total_mark = helper.get_total_mark(student, proof_obligation_data)
