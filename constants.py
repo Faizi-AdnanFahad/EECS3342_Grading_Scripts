@@ -17,6 +17,7 @@ TA_COMMENT_HEADER_NAME = "TA Comment"
 
 # Some Special Row and Column Numbers
 GRADING_COMP_COLUMN = 0
+INSTRUCTOR_COMMENT_COLUMN = 1
 SPECIFIED_GRADE_COLUMN = 2
 
 # total marks
