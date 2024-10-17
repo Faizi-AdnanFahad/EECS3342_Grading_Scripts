@@ -135,26 +135,19 @@ def headers_come_in_pair(headers_tuple):
 
 if __name__ == "__main__":
         assumption1 = check_assumption1(MARKING_SCHEME_SHEET_NAME)
+        assumption2 = check_assumption2(PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
+        assumption3 = check_assumption3(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
+        assumption4 = check_assumption4(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
+        
+        all_assumptions_satisifed = assumption1 and assumption2 and assumption3 and assumption4
+
+        print("==========================================================")
         print(f"assumption 1: {assumption1}")
         print("==========================================================")
-        assumption2 = check_assumption2(PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
         print("assumption 2: ", assumption2)
         print("==========================================================")
-        assumption3 = check_assumption3(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
         print("assumption 3: ", assumption3)
         print("==========================================================")
-        assumption4 = check_assumption4(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
         print("assumption 4: ", assumption4)
         print("==========================================================")
-        # print(helper.get_grading_component_mapping(MARKING_SCHEME_SHEET_NAME))]
-        # print(helper.get_total_mark("abhir37", helper.read_excel_file(constants.XLSC_FILE_PATH, constants.PROOF_OBLIGATION_SHEET_NAME)))
-        # proof_obligation_sheet = helper.read_excel_file(constants.XLSC_FILE_PATH, constants.PROOF_OBLIGATION_SHEET_NAME)
-        
-        # # load grade data-structure for each sheet
-        # proof_obligation_grade = helper.get_sheet_data(proof_obligation_sheet)
-        # print(proof_obligation_grade["abhir37"])
-        # print("-------")
-        # for a, b in proof_obligation_grade["abhir37"].items():
-        #     print(a, b)
-        
-        # print(helper.get_grading_component_mapping(constants.MARKING_SCHEME_SHEET_NAME))
+        print(f"All Assumptions Passed: {all_assumptions_satisifed}")

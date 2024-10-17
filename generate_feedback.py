@@ -48,7 +48,7 @@ if __name__ == "__main__":
             if ta_comment is not None:
                 output_string += f"TA Comment: {ta_comment}\n"
             if instructor_comment is not None:
-                output_string += f"Instructor Comment: {instructor_comment}\n"
+                output_string += f"Instructor' Comment: {instructor_comment}\n"
             output_string += "---\n"
         
         output_string += "====================\n"
@@ -64,7 +64,7 @@ if __name__ == "__main__":
             if ta_comment is not None:
                 output_string += f"TA Comment: {ta_comment}\n"
             if instructor_comment is not None:
-                output_string += f"Instructor Comment: {instructor_comment}\n"
+                output_string += f"Instructor' Comment: {instructor_comment}\n"
                 
                 
             output_string += "---\n"
@@ -82,7 +82,7 @@ if __name__ == "__main__":
             if ta_comment is not None:
                 output_string += f"TA Comment: {ta_comment}\n"
             if instructor_comment is not None:
-                output_string += f"Instructor Comment: {instructor_comment}\n"
+                output_string += f"Instructor' Comment: {instructor_comment}\n"
                 
             output_string += "---\n"
                         
