@@ -35,8 +35,8 @@ Before you can run the grading scripts, make sure you have the following install
       **Optional: Create a virtual environment**:
    ```bash
    python3 -m venv path/to/venv
-   source venv/bin/activate   # On Windows: venv\Scripts\activate
-   python4 -m pip install openpyxl
+   source path/to/venv/bin/activate   # On Windows: venv\Scripts\activate
+   python3 -m pip install openpyxl
    ```
 
    Make sure all required dependencies are installed before running the scripts.
