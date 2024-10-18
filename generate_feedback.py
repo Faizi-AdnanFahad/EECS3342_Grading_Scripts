@@ -32,7 +32,7 @@ if __name__ == "__main__":
         
         output_string += f"Student's EECS login: {student}\n"
         
-        output_string += f"Total marks received: {po_total_mark + c_total_mark + m_total_mark}\n"
+        output_string += f"Total marks received: {po_total_mark + c_total_mark + m_total_mark} (out of {constants.TOTAL_MARKS})\n"
         output_string += "Breakdown of Grading Results\n"
         
         output_string += "====================\n"
