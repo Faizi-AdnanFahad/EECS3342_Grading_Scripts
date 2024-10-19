@@ -1,0 +1,15 @@
+We assume to have an input xlsx file inside the inputs directory that has these 4 sheets:
+(1) Marking Scheme - ProgTest1a
+(2) Proof Obligations
+(3) Context C0A
+(4) Machine EnrollmentA
+
+For (1)
+  + Each row that has two columns with a string and a numerical value (e.g., "thm1/THM, 1") specifies a grading component. 
+  Assigned marks for all grading components should add up to 100.
+
+
+For (2), (3), and (4):
+  + The 1st column contains the EECS logins of all students taking that version of test. The 1st columns of all three sheets should be identical.
+  + Headers of subsequent columns come in pairs: grading components and "TA Comment". Grading component names should match ones specified in (1).
+  + For each row, corresponding to marks that student receives, the numerical value should be constrained by the assigned marks for that grading component.
