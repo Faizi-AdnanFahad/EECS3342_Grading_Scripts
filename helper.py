@@ -1,5 +1,5 @@
 import openpyxl
-import constants
+import configs.constants as constants
 
 XLSC_FILE_PATH = constants.XLSC_FILE_PATH
 MARKING_SCHEME_SHEET_NAME = constants.MARKING_SCHEME_SHEET_NAME
@@ -152,3 +152,28 @@ def get_total_mark(student_login, data_mapping):
     for given_grade in student_marks.values():
         total += given_grade["given_grade"]
     return total
+
+
+def get_students_to_total_grade():
+    result = {}
+    
+    # load sheet objects
+    proof_obligation_sheet = read_excel_file(constants.XLSC_FILE_PATH, constants.PROOF_OBLIGATION_SHEET_NAME)
+    context_sheet = read_excel_file(constants.XLSC_FILE_PATH, constants.CONTEXT_SHEET_NAME)
+    machine_sheet = read_excel_file(constants.XLSC_FILE_PATH, constants.MACHINE_SHEET_NAME)
+    
+    # load grade data-structure for each sheet
+    proof_obligation_data = get_sheet_data(proof_obligation_sheet)
+    context_data = get_sheet_data(context_sheet)
+    machine_data = get_sheet_data(machine_sheet)
+    
+    students = list(proof_obligation_data.keys())
+    
+    for student in students:
+        po_total_mark = get_total_mark(student, proof_obligation_data)
+        c_total_mark = get_total_mark(student, context_data)
+        m_total_mark = get_total_mark(student, machine_data)
+        
+        result[student] = po_total_mark + c_total_mark + m_total_mark
+        
+    return result

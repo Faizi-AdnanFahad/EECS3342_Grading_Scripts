@@ -1,5 +1,5 @@
 import openpyxl
-import constants
+import configs.constants as constants
 import helper
 
 XLSC_FILE_PATH = constants.XLSC_FILE_PATH

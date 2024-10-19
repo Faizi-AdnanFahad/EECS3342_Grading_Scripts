@@ -1,13 +1,5 @@
-import constants
+import configs.constants as constants
 import helper
-
-def write_to_file(file_path, content):
-    try:
-        with open(file_path, 'w') as file:  # Open the file in write mode
-            file.write(content)  # Write the content to the file
-        print(f"Content successfully written to {file_path}")
-    except Exception as e:
-        print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
     # load sheet objects
@@ -86,5 +78,5 @@ if __name__ == "__main__":
                 
             output_string += "---\n"
                         
-        write_to_file(f"{constants.OUPTUT_DIRECTORY}/{student}.txt" , output_string)
+        helper.write_to_file(f"{constants.OUPTUT_DIRECTORY}/{constants.GRADES_DIRECTORY}/{student}.txt" , output_string)
         output_string = ""

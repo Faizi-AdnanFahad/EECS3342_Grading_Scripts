@@ -9,6 +9,7 @@ TEST_NAME = "Programming Test 1"
 # directories
 INPUT_DIRECTORY = "./inputs"
 OUPTUT_DIRECTORY = "./outputs"
+GRADES_DIRECTORY = "grades"
 
 #file names
 XLSC_FILE_PATH = f'{INPUT_DIRECTORY}/EECS3342-F24-ProgTest1a-Grading-Sheet.xlsx'  # Replace with your Excel file path
