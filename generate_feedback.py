@@ -12,8 +12,12 @@ if __name__ == "__main__":
     context_data = helper.get_sheet_data(context_sheet)
     machine_data = helper.get_sheet_data(machine_sheet)
     
+    # grade component to specified grades by professor
     grade_comp_to_specified_grades = helper.get_grading_component_mapping(constants.MARKING_SCHEME_SHEET_NAME)
-    # print(grade_comp_to_specified_grades)    
+    
+    # mapping of student eecs logins to their full name
+    # {"studentid": {"first_name": firstname, "last_name": lastname}}
+    id_to_full_name = helper.parse_student_file(constants.DETAILED_STUDENT_INFO_PATH)
 
     output_string = f"{constants.COURSE_NAME} {constants.SEMESTER} {constants.YEAR_OF_TEACHING} {constants.TEST_NAME} Grading Results\n"
     
@@ -22,7 +26,12 @@ if __name__ == "__main__":
         c_total_mark = helper.get_total_mark(student, context_data)
         m_total_mark = helper.get_total_mark(student, machine_data)
         
+        full_name = id_to_full_name.get(student)
+        first_name = full_name.get("first_name")
+        last_name = full_name.get("last_name")
+        
         output_string += f"Student's EECS login: {student}\n"
+        output_string += f"Full Name: {last_name}, {first_name}\n"
         
         output_string += f"Total marks received: {po_total_mark + c_total_mark + m_total_mark} (out of {constants.TOTAL_MARKS})\n"
         output_string += "Breakdown of Grading Results\n"

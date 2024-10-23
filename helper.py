@@ -177,3 +177,31 @@ def get_students_to_total_grade():
         result[student] = po_total_mark + c_total_mark + m_total_mark
         
     return result
+
+
+# open the object in read mode and return it
+def read_file(file_path):
+    try:
+        file = open(file_path, 'r')
+        return file
+    except FileNotFoundError:
+        print(f"File {file_path} not found.")
+        return None
+
+def parse_student_file(student_info_path):
+    file_obj = read_file(student_info_path)
+    
+    student_dict = {}
+
+    for line in file_obj:
+        # Split the line into components using tab
+        parts = line.strip().split('\t')
+        
+        if len(parts) >= 4:
+            student_id = parts[0].strip()
+            full_name = parts[3].strip().split(', ')
+            first_name = full_name[1]
+            last_name = full_name[0]
+            # Map the student ID to the full name
+            student_dict[student_id] = {"first_name": first_name, "last_name": last_name}
+    return student_dict

@@ -13,6 +13,7 @@ GRADES_DIRECTORY = "grades"
 
 #file names
 XLSC_FILE_PATH = f'{INPUT_DIRECTORY}/EECS3342-F24-ProgTest1a-Grading-Sheet.xlsx'  # Replace with your Excel file path
+DETAILED_STUDENT_INFO_PATH = f'{INPUT_DIRECTORY}/EECS3342E'
 
 # sheet names
 MARKING_SCHEME_SHEET_NAME = 'Marking Scheme - ProgTest1a'
