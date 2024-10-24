@@ -182,15 +182,19 @@ if __name__ == "__main__":
         assumption1 and assumption2 and assumption3 and assumption4
     )
 
+
     print("==========================================================")
     print(f"assumption 1: {assumption1}")
     print("==========================================================")
-    print("assumption 2: ", assumption2)
+    print(f"assumption 2: {assumption2}")
     print("==========================================================")
-    print("assumption 3: ", assumption3)
+    print(f"assumption 3: {assumption3}")
     print("==========================================================")
-    print("assumption 4: ", assumption4)
-    print("==========================================================")
+    print(f"assumption 4: {assumption4}")
+    print("**********************************************************")
     
     # used to check if the feedback file should run not
     print(f"All Assumptions Passed? {all_assumptions_satisifed}")
+    print("**********************************************************")
+    
+    print("For detailed information about the assumptions, please look at the `assumptions.txt`")
