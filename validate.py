@@ -2,7 +2,7 @@ import openpyxl
 import configs.constants as constants
 import helper
 
-XLSC_FILE_PATH = constants.XLSC_FILE_PATH
+XLSC_FILE_PATH = constants.INDIVIDUAL_XLSX_FILE_PATH
 MARKING_SCHEME_SHEET_NAME = constants.MARKING_SCHEME_SHEET_NAME
 PROOF_OBLIGATION_SHEET_NAME = constants.PROOF_OBLIGATION_SHEET_NAME
 CONTEXT_SHEET_NAME = constants.CONTEXT_SHEET_NAME
@@ -13,7 +13,6 @@ MACHINE_SHEET_NAME = constants.MACHINE_SHEET_NAME
 # Checks the assumption that the assigned marks for all grading components add up to TOTAL_MARK=100
 def check_assumption1(sheet_name):
     marking_scheme_sheet = helper.read_excel_file(XLSC_FILE_PATH, sheet_name)
-    
     subtotal = 0
     for row in marking_scheme_sheet.iter_rows(values_only=True):
         if helper.is_a_grading_component(row):
@@ -59,13 +58,13 @@ def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
 
     # proof obligation
     proof_obligation_sheet = helper.read_excel_file(XLSC_FILE_PATH, po_sheet_name)
-    first_row_po_sheet = next(
-        proof_obligation_sheet.iter_rows(values_only=True, max_row=1)
-    )  # headers ROW for PO Sheet
+    first_row_p_sheet =  proof_obligation_sheet[1]
+    first_row_values = tuple([cell.value for cell in first_row_p_sheet if cell.value is not None])
+
     valid_header_PO = is_valid_header(
-        first_row_po_sheet, grade_component_list
+        first_row_values, grade_component_list
     )  # valid headers for Proof obligation
-    pairs_PO = headers_come_in_pair(first_row_po_sheet)
+    pairs_PO = headers_come_in_pair(first_row_values)
 
     if not valid_header_PO or not pairs_PO:
         if not valid_header_PO:
@@ -77,13 +76,13 @@ def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
 
     # context
     contxt_sheet = helper.read_excel_file(XLSC_FILE_PATH, c_sheet_name)
-    first_row_c_sheet = next(
-        contxt_sheet.iter_rows(values_only=True, max_row=1)
-    )  # headers ROW for context Sheet
+    first_row_c_sheet =  contxt_sheet[1]
+    first_row_values = tuple([cell.value for cell in first_row_c_sheet if cell.value is not None])
+    
     valid_header_c = is_valid_header(
         first_row_c_sheet, grade_component_list
     )  # valid headers for context
-    pairs_c = headers_come_in_pair(first_row_c_sheet)
+    pairs_c = headers_come_in_pair(first_row_values)
     if not valid_header_c or not pairs_c:
         if not valid_header_c:
             print(f"Error: `{c_sheet_name}` sheet does not have valid headers.")
@@ -94,13 +93,14 @@ def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
 
     # machine
     machine_sheet = helper.read_excel_file(XLSC_FILE_PATH, m_sheet_name)
-    first_row_m_sheet = next(
-        machine_sheet.iter_rows(values_only=True, max_row=1)
-    )  # headers ROW for context Sheet
+    first_row_m_sheet =  machine_sheet[1]
+    first_row_values = tuple([cell.value for cell in first_row_m_sheet if cell.value is not None])
+    
+    # headers ROW for context Sheet
     valid_header_m = is_valid_header(
-        first_row_m_sheet, grade_component_list
+        first_row_values, grade_component_list
     )  # valid headers for context
-    pairs_m = headers_come_in_pair(first_row_m_sheet)
+    pairs_m = headers_come_in_pair(first_row_values)
 
     if not valid_header_m or not pairs_m:
         if not valid_header_m:
@@ -116,7 +116,6 @@ def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
 # For each row, corresponding to marks that student receives, the numerical value should be constrained by the assigned marks for that grading component.
 def check_assumption4(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_name):
     grade_comp_to_grade = helper.get_grading_component_mapping(m_scheme_sheet_name)
-
     # sheets
     proof_obligation_sheet = helper.read_excel_file(XLSC_FILE_PATH, po_sheet_name)
     context_sheet = helper.read_excel_file(XLSC_FILE_PATH, c_sheet_name)
@@ -147,7 +146,7 @@ def check_assumption4(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
 def is_valid_header(headers_tuple, grading_component_list):
     for i in range(1, len(headers_tuple) - 1, 2):
         current_grading_component = headers_tuple[i]
-        if current_grading_component not in grading_component_list:
+        if current_grading_component == "None" and current_grading_component not in grading_component_list:
             print(
                 f"Error: '{current_grading_component}' is not a valid grading component."
             )

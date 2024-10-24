@@ -3,9 +3,9 @@ import helper
 
 if __name__ == "__main__":
     # load sheet objects
-    proof_obligation_sheet = helper.read_excel_file(constants.XLSC_FILE_PATH, constants.PROOF_OBLIGATION_SHEET_NAME)
-    context_sheet = helper.read_excel_file(constants.XLSC_FILE_PATH, constants.CONTEXT_SHEET_NAME)
-    machine_sheet = helper.read_excel_file(constants.XLSC_FILE_PATH, constants.MACHINE_SHEET_NAME)
+    proof_obligation_sheet = helper.read_excel_file(constants.INDIVIDUAL_XLSX_FILE_PATH, constants.PROOF_OBLIGATION_SHEET_NAME)
+    context_sheet = helper.read_excel_file(constants.INDIVIDUAL_XLSX_FILE_PATH, constants.CONTEXT_SHEET_NAME)
+    machine_sheet = helper.read_excel_file(constants.INDIVIDUAL_XLSX_FILE_PATH, constants.MACHINE_SHEET_NAME)
     
     # load grade data-structure for each sheet
     proof_obligation_data = helper.get_sheet_data(proof_obligation_sheet)
