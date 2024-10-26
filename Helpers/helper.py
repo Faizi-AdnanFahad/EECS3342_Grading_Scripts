@@ -161,8 +161,8 @@ def get_total_mark(student_login, data_mapping):
         total += given_grade["given_grade"]
     return total
 
-# open the object in read mode and return it
 def read_file(file_path):
+    """opens the object in read mode and return it"""
     try:
         file = open(file_path, 'r')
         return file
@@ -170,7 +170,9 @@ def read_file(file_path):
         print(f"File {file_path} not found.")
         return None
 
+
 def parse_student_file(student_info_path):
+    "Scan and parse a student's personal information from a text file and return the firstname, lastname mapping"
     file_obj = read_file(student_info_path)
     
     student_dict = {}
