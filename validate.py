@@ -170,31 +170,3 @@ def headers_come_in_pair(headers_tuple):
 
     # print(f"All grading components are correctly followed by {constants.TA_COMMENT_HEADER_NAME}.")
     return True
-
-
-if __name__ == "__main__":
-    assumption1 = check_assumption1(MARKING_SCHEME_SHEET_NAME)
-    assumption2 = check_assumption2(PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
-    assumption3 = check_assumption3(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
-    assumption4 = check_assumption4(MARKING_SCHEME_SHEET_NAME, PROOF_OBLIGATION_SHEET_NAME, CONTEXT_SHEET_NAME, MACHINE_SHEET_NAME)
-
-    all_assumptions_satisifed = (
-        assumption1 and assumption2 and assumption3 and assumption4
-    )
-
-
-    print("==========================================================")
-    print(f"assumption 1: {assumption1}")
-    print("==========================================================")
-    print(f"assumption 2: {assumption2}")
-    print("==========================================================")
-    print(f"assumption 3: {assumption3}")
-    print("==========================================================")
-    print(f"assumption 4: {assumption4}")
-    print("**********************************************************")
-    
-    # used to check if the feedback file should run not
-    print(f"All Assumptions Passed? {all_assumptions_satisifed}")
-    print("**********************************************************")
-    
-    print("For detailed information about the assumptions, please look at the `assumptions.txt`")
