@@ -1,11 +1,12 @@
 import configs.constants as constants
-import helper
+import Helpers.helper as helper
+import validate
 
-if __name__ == "__main__":
+def generate_feedback():
     # load sheet objects
-    proof_obligation_sheet = helper.read_excel_file(constants.XLSC_FILE_PATH, constants.PROOF_OBLIGATION_SHEET_NAME)
-    context_sheet = helper.read_excel_file(constants.XLSC_FILE_PATH, constants.CONTEXT_SHEET_NAME)
-    machine_sheet = helper.read_excel_file(constants.XLSC_FILE_PATH, constants.MACHINE_SHEET_NAME)
+    proof_obligation_sheet = helper.read_excel_file(constants.INDIVIDUAL_XLSX_FILE_PATH, constants.PROOF_OBLIGATION_SHEET_NAME)
+    context_sheet = helper.read_excel_file(constants.INDIVIDUAL_XLSX_FILE_PATH, constants.CONTEXT_SHEET_NAME)
+    machine_sheet = helper.read_excel_file(constants.INDIVIDUAL_XLSX_FILE_PATH, constants.MACHINE_SHEET_NAME)
     
     # load grade data-structure for each sheet
     proof_obligation_data = helper.get_sheet_data(proof_obligation_sheet)
@@ -89,3 +90,33 @@ if __name__ == "__main__":
                         
         helper.write_to_file(f"{constants.OUPTUT_DIRECTORY}/{constants.GRADES_DIRECTORY}/{student}.txt" , output_string)
         output_string = ""
+        
+if __name__ == "__main__":
+    assumption1 = validate.check_assumption1(constants.MARKING_SCHEME_SHEET_NAME)
+    assumption2 = validate.check_assumption2(constants.PROOF_OBLIGATION_SHEET_NAME, constants.CONTEXT_SHEET_NAME, constants.MACHINE_SHEET_NAME)
+    assumption3 = validate.check_assumption3(constants.MARKING_SCHEME_SHEET_NAME, constants.PROOF_OBLIGATION_SHEET_NAME, constants.CONTEXT_SHEET_NAME, constants.MACHINE_SHEET_NAME)
+    assumption4 = validate.check_assumption4(constants.MARKING_SCHEME_SHEET_NAME, constants.PROOF_OBLIGATION_SHEET_NAME, constants.CONTEXT_SHEET_NAME, constants.MACHINE_SHEET_NAME)
+
+    all_assumptions_satisifed = (
+        assumption1 and assumption2 and assumption3 and assumption4
+    )
+
+    print("==========================================================")
+    print(f"assumption 1: {assumption1}")
+    print("==========================================================")
+    print(f"assumption 2: {assumption2}")
+    print("==========================================================")
+    print(f"assumption 3: {assumption3}")
+    print("==========================================================")
+    print(f"assumption 4: {assumption4}")
+    print("*****************************************************************")
+    print(f"All Assumptions Passed? {all_assumptions_satisifed}")
+    print("*****************************************************************")
+    
+    print("For detailed information about the assumptions, please look at the `assumptions.txt`")
+    
+    # generate feedback only if all assumptions are satisifed
+    if all_assumptions_satisifed:
+        generate_feedback()
+    else:
+        print("Feedbacks will not be generated! Please make sure that all assumptions are satisfied first")

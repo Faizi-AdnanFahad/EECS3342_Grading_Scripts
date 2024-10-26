@@ -1,7 +1,8 @@
 import openpyxl
 import configs.constants as constants
+import configs.epost_config as epost_configs
 
-XLSC_FILE_PATH = constants.XLSC_FILE_PATH
+XLSC_FILE_PATH = constants.INDIVIDUAL_XLSX_FILE_PATH
 MARKING_SCHEME_SHEET_NAME = constants.MARKING_SCHEME_SHEET_NAME
 PROOF_OBLIGATION_SHEET_NAME = constants.PROOF_OBLIGATION_SHEET_NAME
 
@@ -91,20 +92,21 @@ def get_sheet_data(sheet):
     header_row = next(
         sheet.iter_rows(min_row=1, max_row=1, min_col=1, values_only=True)
     )
-
+    header_row = tuple(cell for cell in header_row if cell is not None) # eliminate all None values
+    
     # skip the header row'
     for row in sheet.iter_rows(min_row=2, min_col=1, values_only=True):
         if any(
             value is not None for value in row
-        ):  # if all value of the row is not NONE
-            for i in range(1, len(row), 2):
+        ): 
+            for i in range(1, len(header_row), 2):
                 student_login = row[
                     0
                 ]  # student login assumed to be in column 1 as per assumption1
                 grading_comp = header_row[i]
                 given_grade = row[i]
                 ta_comment = row[i + 1]
-
+                
                 if student_login not in grades:
                     initial_grade = {}
                     initial_grade[grading_comp] = {
@@ -129,12 +131,18 @@ def is_constrained(sheet, grade_comp_to_grade):
     sheet_data = get_sheet_data(sheet)
     for student_login in sheet_data:
         grade_comp_to_given_grade_mappings = sheet_data[student_login]
-        for (
-            grading_comp,
-            grade_and_ta_comment,
-        ) in grade_comp_to_given_grade_mappings.items():
+        for (grading_comp,grade_and_ta_comment) in grade_comp_to_given_grade_mappings.items():
             given_grade = grade_and_ta_comment["given_grade"]
             specified_grade = grade_comp_to_grade.get(grading_comp)["specified_grade"]
+            
+            if given_grade is None:
+                print(f"Error: No grade found for `{student_login}': ({grading_comp} -> {given_grade})")
+                return False
+            
+            if isinstance(given_grade, str):
+                print(f"Error: Grade can not be a string `{student_login}': ({grading_comp} -> {given_grade})")
+                return False
+                
             if 0 <= given_grade and given_grade <= specified_grade:
                 continue
             else:
@@ -153,34 +161,8 @@ def get_total_mark(student_login, data_mapping):
         total += given_grade["given_grade"]
     return total
 
-
-def get_students_to_total_grade():
-    result = {}
-    
-    # load sheet objects
-    proof_obligation_sheet = read_excel_file(constants.XLSC_FILE_PATH, constants.PROOF_OBLIGATION_SHEET_NAME)
-    context_sheet = read_excel_file(constants.XLSC_FILE_PATH, constants.CONTEXT_SHEET_NAME)
-    machine_sheet = read_excel_file(constants.XLSC_FILE_PATH, constants.MACHINE_SHEET_NAME)
-    
-    # load grade data-structure for each sheet
-    proof_obligation_data = get_sheet_data(proof_obligation_sheet)
-    context_data = get_sheet_data(context_sheet)
-    machine_data = get_sheet_data(machine_sheet)
-    
-    students = list(proof_obligation_data.keys())
-    
-    for student in students:
-        po_total_mark = get_total_mark(student, proof_obligation_data)
-        c_total_mark = get_total_mark(student, context_data)
-        m_total_mark = get_total_mark(student, machine_data)
-        
-        result[student] = po_total_mark + c_total_mark + m_total_mark
-        
-    return result
-
-
-# open the object in read mode and return it
 def read_file(file_path):
+    """opens the object in read mode and return it"""
     try:
         file = open(file_path, 'r')
         return file
@@ -188,7 +170,9 @@ def read_file(file_path):
         print(f"File {file_path} not found.")
         return None
 
+
 def parse_student_file(student_info_path):
+    "Scan and parse a student's personal information from a text file and return the firstname, lastname mapping"
     file_obj = read_file(student_info_path)
     
     student_dict = {}
