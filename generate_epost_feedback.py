@@ -23,5 +23,18 @@ if __name__ == "__main__":
     
     for student in students:
         output_string += f"{student} {student_to_total_grade.get(student)}\n"
+    
+    e_post_filename = ""
+    if len(constants.ALL_XLSX_FILE_MAP_PATHS_TO_SHEET_NAMES) == 1: # generate individual epost file
+        xlsx_file_path = next(iter(constants.ALL_XLSX_FILE_MAP_PATHS_TO_SHEET_NAMES))
         
-    helper.write_to_file(f"{constants.OUPTUT_DIRECTORY}/{epost_config.EPOST_DIRECTORY}/{epost_config.COURSE}.epost" , output_string)
+        # get the individual Assessment name from the xlsx file name - to be used as .epost filename
+        e_post_filename_prefix = xlsx_file_path.split("-")[2]
+        e_post_filename = f"{e_post_filename_prefix}.{epost_config.EPOST_FILENAME_POSTFIX}"
+    elif len(constants.ALL_XLSX_FILE_MAP_PATHS_TO_SHEET_NAMES) == 3:
+        e_post_filename = f"{epost_config.ASSESSMENT}.{epost_config.EPOST_FILENAME_POSTFIX}"
+    else:
+        print("Error: .ePost file can only be generated for either a single file or All 3 files")
+        exit()
+    
+    helper.write_to_file(f"{epost_config.OUPTUT_DIRECTORY}/{epost_config.EPOST_DIRECTORY}/{e_post_filename}" , output_string)
