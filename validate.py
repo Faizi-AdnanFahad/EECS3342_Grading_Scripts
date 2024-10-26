@@ -1,6 +1,6 @@
 import openpyxl
 import configs.constants as constants
-import helper
+import Helpers.helper as helper
 
 XLSC_FILE_PATH = constants.INDIVIDUAL_XLSX_FILE_PATH
 MARKING_SCHEME_SHEET_NAME = constants.MARKING_SCHEME_SHEET_NAME
