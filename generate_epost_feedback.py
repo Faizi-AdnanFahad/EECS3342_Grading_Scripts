@@ -10,7 +10,7 @@ epost_config = configs.epost_config
 
 if __name__ == "__main__":
     output_string = f"+ {epost_config.COURSE} {epost_config.SEMESTER} {epost_config.ASSESSMENT}\n"
-    output_string += f"+ To see feedback, run the command <b>feedback {epost_config.FEEDBACK_DIRECTORY}F {epost_config.ASSESSMENT}</b> on a remote labs terminal.\n"
+    output_string += f"+ To see feedback, run the command <b>feedback {epost_config.FEEDBACK_DIRECTORY} {epost_config.ASSESSMENT}</b> on a remote labs terminal.\n"
     output_string += f"+ cutoff: A+={epost_config.TOTAL_MARK * 0.90:.2f}, A={epost_config.TOTAL_MARK * 0.80:.2f}, B+={epost_config.TOTAL_MARK * 0.750:.2f}, B={epost_config.TOTAL_MARK * 0.700:.2f}, C+={epost_config.TOTAL_MARK * 0.650:.2f}, C={epost_config.TOTAL_MARK * 0.60:.2f}, D+={epost_config.TOTAL_MARK * 0.550:.2f}, D={epost_config.TOTAL_MARK * 0.50:.2f}, E={epost_config.TOTAL_MARK * 0.450:.2f}, F={epost_config.TOTAL_MARK * 00:.2f}\n"
     
     # get student -> total grade mapping

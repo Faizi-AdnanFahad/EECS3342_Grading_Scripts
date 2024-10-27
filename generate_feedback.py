@@ -20,9 +20,14 @@ def generate_feedback():
     # {"studentid": {"first_name": firstname, "last_name": lastname}}
     id_to_full_name = helper.parse_student_file(constants.DETAILED_STUDENT_INFO_PATH)
 
-    output_string = f"{constants.COURSE_NAME} {constants.SEMESTER} {constants.YEAR_OF_TEACHING} {constants.TEST_NAME} Grading Results\n"
+    output_string = ""
+    
+    # get the version of the test the student took
+    test_version = constants.INDIVIDUAL_XLSX_FILE_PATH.split("-")[2][-1] # get the last character of the assessment from xlsx file
     
     for student in proof_obligation_data:
+        output_string += f"{constants.COURSE_NAME} {constants.SEMESTER} {constants.YEAR_OF_TEACHING} {constants.TEST_NAME} Grading Results\n"
+        output_string += f"Assessment Version: {test_version}\n"
         po_total_mark = helper.get_total_mark(student, proof_obligation_data)
         c_total_mark = helper.get_total_mark(student, context_data)
         m_total_mark = helper.get_total_mark(student, machine_data)
