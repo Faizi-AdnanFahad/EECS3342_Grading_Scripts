@@ -80,7 +80,7 @@ def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
     first_row_values = tuple([cell.value for cell in first_row_c_sheet if cell.value is not None])
     
     valid_header_c = is_valid_header(
-        first_row_c_sheet, grade_component_list
+        first_row_values, grade_component_list
     )  # valid headers for context
     pairs_c = headers_come_in_pair(first_row_values)
     if not valid_header_c or not pairs_c:
@@ -146,7 +146,7 @@ def check_assumption4(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_
 def is_valid_header(headers_tuple, grading_component_list):
     for i in range(1, len(headers_tuple) - 1, 2):
         current_grading_component = headers_tuple[i]
-        if current_grading_component == "None" and current_grading_component not in grading_component_list:
+        if current_grading_component == "None" or current_grading_component not in grading_component_list:
             print(
                 f"Error: '{current_grading_component}' is not a valid grading component."
             )
