@@ -15,6 +15,9 @@ if __name__ == "__main__":
     
     # get student -> total grade mapping
     student_to_total_grade =  epost_helper.get_students_to_total_grade()
+    
+    # sort by descending grade
+    student_to_total_grade = dict(sorted(student_to_total_grade.items(), key=lambda item: item[1], reverse=True))
         
     # assuming the list of students are identical in all of the sheets
     students = list(student_to_total_grade.keys())
