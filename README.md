@@ -49,11 +49,11 @@ The main grading process can be run using the following steps:
    Place your input files inside the `inputs/` directory. These files will be processed by the scripts.
    - **constants.py**: Contains global constants used across multiple scripts. Please make sure to modify the values as needed.
 
-3. **Run the grading script**:
-   To run the entire grading process, execute the `run.sh` shell script which triggers all necessary scripts (validation, feedback generation, etc.):
-   ```bash
-   bash run.sh
-   ```
+2. **Run the grading script**:
+   - To generate detailed feedbacks for students, run the script `generate_feedback.py`
+   - To generate a detailed ePost file:
+     - If you would like to generate a cummulative ePost feedback file for all of the tests, make sure to add the XLSX file name and the respective sheet names in `ALL_XLSX_FILE_MAP_PATHS_TO_SHEET_NAMES`.
+     - If you would like to generate individual ePost feedback files, only add the the XLSX file name and the respective sheet names in `ALL_XLSX_FILE_MAP_PATHS_TO_SHEET_NAMES`. 
   Note that feedback will only be generated if all the assumptions are satisifed.
 
 3. **View Output**:
