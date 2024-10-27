@@ -1,3 +1,5 @@
 # Ignore the 'input_files' directory
-input_files/
+inputs/
 outputs/
+EECS3342.epost
+ProgTest1.ePost
