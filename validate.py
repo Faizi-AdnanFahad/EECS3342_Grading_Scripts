@@ -78,31 +78,17 @@ def check_assumption3(m_scheme_sheet_name, sheets):
 
 # assumption 4
 # For each row, corresponding to marks that student receives, the numerical value should be constrained by the assigned marks for that grading component.
-def check_assumption4(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_name):
+def check_assumption4(m_scheme_sheet_name, sheets):
     grade_comp_to_grade = helper.get_grading_component_mapping(m_scheme_sheet_name)
-    # sheets
-    proof_obligation_sheet = helper.read_excel_file(XLSC_FILE_PATH, po_sheet_name)
-    context_sheet = helper.read_excel_file(XLSC_FILE_PATH, c_sheet_name)
-    machine_sheet = helper.read_excel_file(XLSC_FILE_PATH, m_sheet_name)
-
-    po_sheet_constrained = helper.is_constrained(proof_obligation_sheet, grade_comp_to_grade)
-    c_sheet_constrained = helper.is_constrained(context_sheet, grade_comp_to_grade)
-    m_sheet_constrained = helper.is_constrained(machine_sheet, grade_comp_to_grade)
-
-    if not po_sheet_constrained or not c_sheet_constrained or not m_sheet_constrained:
-        if not po_sheet_constrained:
+    for sheet_name in sheets.values():
+        current_sheet_obj = helper.read_excel_file(XLSC_FILE_PATH, sheet_name)
+        is_sheet_constrained = helper.is_constrained(current_sheet_obj, grade_comp_to_grade)
+        if not is_sheet_constrained:
             print(
-                f"Error: Given mark in `{po_sheet_name}` sheet, is outside of the specified mark in `{m_scheme_sheet_name}` sheet."
+                f"Error: Given mark in `{sheet_name}` sheet, is outside of the specified mark in `{m_scheme_sheet_name}` sheet."
             )
-        if not c_sheet_constrained:
-            print(
-                f"Error: Given mark in `{c_sheet_name}` sheet, is outside of the specified mark in `{m_scheme_sheet_name}` sheet."
-            )
-        if not m_sheet_constrained:
-            print(
-                f"Error: Given mark in `{m_sheet_name}` sheet, is outside of the specified mark in `{m_scheme_sheet_name}` sheet."
-            )
-        return False
+            return False
+    
     return True
 
 # Helper method that checks to see if header is a valid header.
@@ -137,7 +123,8 @@ def headers_come_in_pair(headers_tuple):
 
 
 if __name__ == "__main__":
-    assumption1 = check_assumption1(constants.MARKING_SCHEME_SHEET_NAME)
-    assumption2 = check_assumption2(constants.SHEET_NAMES)
-    assumption3 = check_assumption3(constants.MARKING_SCHEME_SHEET_NAME, constants.SHEET_NAMES)
-    print(assumption3)
+    # assumption1 = check_assumption1(constants.MARKING_SCHEME_SHEET_NAME)
+    # assumption2 = check_assumption2(constants.SHEET_NAMES)
+    # assumption3 = check_assumption3(constants.MARKING_SCHEME_SHEET_NAME, constants.SHEET_NAMES)
+    assumption4 = check_assumption4(constants.MARKING_SCHEME_SHEET_NAME, constants.SHEET_NAMES)
+    print(assumption4)
