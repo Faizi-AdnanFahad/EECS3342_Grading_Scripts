@@ -3,11 +3,6 @@ import configs.constants as constants
 import Helpers.helper as helper
 
 XLSC_FILE_PATH = constants.INDIVIDUAL_XLSX_FILE_PATH
-MARKING_SCHEME_SHEET_NAME = constants.MARKING_SCHEME_SHEET_NAME
-PROOF_OBLIGATION_SHEET_NAME = constants.PROOF_OBLIGATION_SHEET_NAME
-CONTEXT_SHEET_NAME = constants.CONTEXT_SHEET_NAME
-MACHINE_SHEET_NAME = constants.MACHINE_SHEET_NAME
-
 
 # assumption 1:
 # Checks the assumption that the assigned marks for all grading components add up to TOTAL_MARK=100
@@ -27,20 +22,18 @@ def check_assumption1(sheet_name):
 
 
 # assumption 2:
-# Assuming that the 1st column contains the EECS logins of all students taking that version of test.
-# This function returns true if the 1st columns of all three sheets is identical, false otherwise.
-def check_assumption2(po_sheet_name, c_sheet_name, m_sheet_name):
-    # sheets
-    proof_obligation_sheet = helper.read_excel_file(XLSC_FILE_PATH, po_sheet_name)
-    context_sheet = helper.read_excel_file(XLSC_FILE_PATH, c_sheet_name)
-    machine_sheet = helper.read_excel_file(XLSC_FILE_PATH, m_sheet_name)
-
-    # get the list of eecs logins in each sheet
-    eecs_logins_from_PO = helper.get_eecs_logins(proof_obligation_sheet)
-    eecs_logins_from_context = helper.get_eecs_logins(context_sheet)
-    eecs_logins_from_machine = helper.get_eecs_logins(machine_sheet)
-
-    if eecs_logins_from_PO == eecs_logins_from_context == eecs_logins_from_machine:
+# Assuming that the 1st column of sheets always contains the EECS logins of all students taking that version of test.
+# This function returns true if the 1st columns of all sheets are identical, false otherwise.
+def check_assumption2(sheets):
+    eecs_logins = []
+    for sheet_names in sheets.keys():
+        current_sheet_obj = helper.read_excel_file(XLSC_FILE_PATH, sheet_names)
+        current_eecs_logins = helper.get_eecs_logins(current_sheet_obj)
+        eecs_logins.append(current_eecs_logins)
+    
+    identical = all(sublist == eecs_logins[0] for sublist in eecs_logins) 
+    
+    if identical:
         return True
     else:
         print(f"Error: Student logins aren't identical in all sheets.")
@@ -51,94 +44,46 @@ def check_assumption2(po_sheet_name, c_sheet_name, m_sheet_name):
 # Assumption 3
 # Except the first column, Headers of subsequent columns come in pairs in sheets: grading components and "TA Comment".
 # Grading component names should match ones specified in assumption_1.
-def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_name):
+def check_assumption3(m_scheme_sheet_name, sheets):
     grade_component_list = list(
         helper.get_grading_component_mapping(m_scheme_sheet_name).keys()
     )
 
-    # proof obligation
-    proof_obligation_sheet = helper.read_excel_file(XLSC_FILE_PATH, po_sheet_name)
-    first_row_p_sheet =  proof_obligation_sheet[1]
-    first_row_values = tuple([cell.value for cell in first_row_p_sheet if cell.value is not None])
+    for sheet_name in sheets.keys():
+        current_sheet_obj = helper.read_excel_file(XLSC_FILE_PATH, sheet_name)
+        first_row_p_sheet =  current_sheet_obj[1]
+        first_row_values = tuple([cell.value for cell in first_row_p_sheet if cell.value is not None])
+        
+        # does sheet have valid header names
+        has_valid_headers = is_valid_header(
+            first_row_values, grade_component_list
+        )
+        
+        # does grading com
+        comes_in_pair = headers_come_in_pair(first_row_values)
+        if not has_valid_headers or not comes_in_pair:
+            if not has_valid_headers:
+                print(f"Error: `{sheet_name}` sheet does not have valid headers.")
 
-    valid_header_PO = is_valid_header(
-        first_row_values, grade_component_list
-    )  # valid headers for Proof obligation
-    pairs_PO = headers_come_in_pair(first_row_values)
-
-    if not valid_header_PO or not pairs_PO:
-        if not valid_header_PO:
-            print(f"Error: `{po_sheet_name}` sheet does not have valid headers.")
-
-        if not pairs_PO:
-            print(f"Error: `{po_sheet_name}` sheet does not come in pairs.")
-        return False
-
-    # context
-    contxt_sheet = helper.read_excel_file(XLSC_FILE_PATH, c_sheet_name)
-    first_row_c_sheet =  contxt_sheet[1]
-    first_row_values = tuple([cell.value for cell in first_row_c_sheet if cell.value is not None])
+            if not comes_in_pair:
+                print(f"Error: `{sheet_name}` sheet does not come in pairs.")
+            return False
     
-    valid_header_c = is_valid_header(
-        first_row_values, grade_component_list
-    )  # valid headers for context
-    pairs_c = headers_come_in_pair(first_row_values)
-    if not valid_header_c or not pairs_c:
-        if not valid_header_c:
-            print(f"Error: `{c_sheet_name}` sheet does not have valid headers.")
-
-        if not pairs_c:
-            print(f"Error: `{c_sheet_name}` sheet does not come in pairs.")
-        return False
-
-    # machine
-    machine_sheet = helper.read_excel_file(XLSC_FILE_PATH, m_sheet_name)
-    first_row_m_sheet =  machine_sheet[1]
-    first_row_values = tuple([cell.value for cell in first_row_m_sheet if cell.value is not None])
-    
-    # headers ROW for context Sheet
-    valid_header_m = is_valid_header(
-        first_row_values, grade_component_list
-    )  # valid headers for context
-    pairs_m = headers_come_in_pair(first_row_values)
-
-    if not valid_header_m or not pairs_m:
-        if not valid_header_m:
-            print(f"Error: `{m_sheet_name}` sheet does not have valid headers.")
-
-        if not pairs_m:
-            print(f"Error: `{m_sheet_name}` sheet does not come in pairs.")
-        return False
-
     return True
 
 # assumption 4
 # For each row, corresponding to marks that student receives, the numerical value should be constrained by the assigned marks for that grading component.
-def check_assumption4(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_name):
+def check_assumption4(m_scheme_sheet_name, sheets):
     grade_comp_to_grade = helper.get_grading_component_mapping(m_scheme_sheet_name)
-    # sheets
-    proof_obligation_sheet = helper.read_excel_file(XLSC_FILE_PATH, po_sheet_name)
-    context_sheet = helper.read_excel_file(XLSC_FILE_PATH, c_sheet_name)
-    machine_sheet = helper.read_excel_file(XLSC_FILE_PATH, m_sheet_name)
-
-    po_sheet_constrained = helper.is_constrained(proof_obligation_sheet, grade_comp_to_grade)
-    c_sheet_constrained = helper.is_constrained(context_sheet, grade_comp_to_grade)
-    m_sheet_constrained = helper.is_constrained(machine_sheet, grade_comp_to_grade)
-
-    if not po_sheet_constrained or not c_sheet_constrained or not m_sheet_constrained:
-        if not po_sheet_constrained:
+    for sheet_name in sheets.keys():
+        current_sheet_obj = helper.read_excel_file(XLSC_FILE_PATH, sheet_name)
+        is_sheet_constrained = helper.is_constrained(current_sheet_obj, grade_comp_to_grade)
+        if not is_sheet_constrained:
             print(
-                f"Error: Given mark in `{po_sheet_name}` sheet, is outside of the specified mark in `{m_scheme_sheet_name}` sheet."
+                f"Error: Given mark in `{sheet_name}` sheet, is outside of the specified mark in `{m_scheme_sheet_name}` sheet."
             )
-        if not c_sheet_constrained:
-            print(
-                f"Error: Given mark in `{c_sheet_name}` sheet, is outside of the specified mark in `{m_scheme_sheet_name}` sheet."
-            )
-        if not m_sheet_constrained:
-            print(
-                f"Error: Given mark in `{m_sheet_name}` sheet, is outside of the specified mark in `{m_scheme_sheet_name}` sheet."
-            )
-        return False
+            return False
+    
     return True
 
 # Helper method that checks to see if header is a valid header.

@@ -1,12 +1,13 @@
+ASSESSMENT = "ProgTest2"
+
 # Directories
-INPUT_DIRECTORY = "./inputs"
+INPUT_DIRECTORY = f"./inputs/{ASSESSMENT}"
 OUPTUT_DIRECTORY = "./outputs"
 EPOST_DIRECTORY = "e_post"
 
 # Some Course and Test Specific Information
 COURSE = "EECS3342"
 SEMESTER = "Fall 2024"
-ASSESSMENT = "ProgTest1"
 FEEDBACK_DIRECTORY = 3342
 TOTAL_MARK = 100
 CPS_WEIGHT = 5
@@ -15,12 +16,11 @@ AVAILABLE_DATE = "2022-10-18"
 
 # list of all 3 XLSX files to generate a combined ePost file. Else, declare a single xlsx file and a single a single relevant ePost file will be generated.
 ALL_XLSX_FILE_MAP_PATHS_TO_SHEET_NAMES = {
-    f"{INPUT_DIRECTORY}/EECS3342-F24-ProgTest1a-Grading-Sheet.xlsx": ["Proof Obligations", "Context C0A", "Machine EnrollmentA"],
-    f"{INPUT_DIRECTORY}/EECS3342-F24-ProgTest1b-Grading-Sheet.xlsx": ["Proof Obligations", "Context C0B", "Machine EnrollmentB"],
-    f"{INPUT_DIRECTORY}/EECS3342-F24-ProgTest1c-Grading-Sheet.xlsx": ["Proof Obligations", "Context C0C", "Machine EnrollmentC"],
+    f"{INPUT_DIRECTORY}/EECS3342-F24-ProgTest2a-Grading-Sheet.xlsx": ["Proof Obligations", "Context opA", "Compilation-Errors"],
+    f"{INPUT_DIRECTORY}/EECS3342-F24-ProgTest2b-Grading-Sheet.xlsx": ["Proof Obligations", "Context opB", "Compilation-Errors"],
 }
 
 EPOST_FILENAME_POSTFIX = "ePost"
 
 # Additional params
-NUM_OF_VERSIONS_OF_ASSESSMENT = 3
+NUM_OF_VERSIONS_OF_ASSESSMENT = 2

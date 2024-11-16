@@ -17,9 +17,9 @@ def get_students_to_total_grade():
         students = list(proof_obligation_data.keys())
     
         for student in students:
-            po_total_mark = helper.get_total_mark(student, proof_obligation_data)
-            c_total_mark = helper.get_total_mark(student, context_data)
-            m_total_mark = helper.get_total_mark(student, machine_data)
+            po_total_mark = helper.get_total_mark_in_a_sheet(student, proof_obligation_data)
+            c_total_mark = helper.get_total_mark_in_a_sheet(student, context_data)
+            m_total_mark = helper.get_total_mark_in_a_sheet(student, machine_data)
         
             result[student] = po_total_mark + c_total_mark + m_total_mark
         
