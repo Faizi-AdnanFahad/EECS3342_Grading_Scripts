@@ -49,65 +49,31 @@ def check_assumption2(sheets):
 # Assumption 3
 # Except the first column, Headers of subsequent columns come in pairs in sheets: grading components and "TA Comment".
 # Grading component names should match ones specified in assumption_1.
-def check_assumption3(m_scheme_sheet_name, po_sheet_name, c_sheet_name, m_sheet_name):
+def check_assumption3(m_scheme_sheet_name, sheets):
     grade_component_list = list(
         helper.get_grading_component_mapping(m_scheme_sheet_name).keys()
     )
 
-    # proof obligation
-    proof_obligation_sheet = helper.read_excel_file(XLSC_FILE_PATH, po_sheet_name)
-    first_row_p_sheet =  proof_obligation_sheet[1]
-    first_row_values = tuple([cell.value for cell in first_row_p_sheet if cell.value is not None])
+    for sheet_name in sheets.values():
+        current_sheet_obj = helper.read_excel_file(XLSC_FILE_PATH, sheet_name)
+        first_row_p_sheet =  current_sheet_obj[1]
+        first_row_values = tuple([cell.value for cell in first_row_p_sheet if cell.value is not None])
+        
+        # does sheet have valid header names
+        has_valid_headers = is_valid_header(
+            first_row_values, grade_component_list
+        )
+        
+        # does grading com
+        comes_in_pair = headers_come_in_pair(first_row_values)
+        if not has_valid_headers or not comes_in_pair:
+            if not has_valid_headers:
+                print(f"Error: `{sheet_name}` sheet does not have valid headers.")
 
-    valid_header_PO = is_valid_header(
-        first_row_values, grade_component_list
-    )  # valid headers for Proof obligation
-    pairs_PO = headers_come_in_pair(first_row_values)
-
-    if not valid_header_PO or not pairs_PO:
-        if not valid_header_PO:
-            print(f"Error: `{po_sheet_name}` sheet does not have valid headers.")
-
-        if not pairs_PO:
-            print(f"Error: `{po_sheet_name}` sheet does not come in pairs.")
-        return False
-
-    # context
-    contxt_sheet = helper.read_excel_file(XLSC_FILE_PATH, c_sheet_name)
-    first_row_c_sheet =  contxt_sheet[1]
-    first_row_values = tuple([cell.value for cell in first_row_c_sheet if cell.value is not None])
+            if not comes_in_pair:
+                print(f"Error: `{sheet_name}` sheet does not come in pairs.")
+            return False
     
-    valid_header_c = is_valid_header(
-        first_row_values, grade_component_list
-    )  # valid headers for context
-    pairs_c = headers_come_in_pair(first_row_values)
-    if not valid_header_c or not pairs_c:
-        if not valid_header_c:
-            print(f"Error: `{c_sheet_name}` sheet does not have valid headers.")
-
-        if not pairs_c:
-            print(f"Error: `{c_sheet_name}` sheet does not come in pairs.")
-        return False
-
-    # machine
-    machine_sheet = helper.read_excel_file(XLSC_FILE_PATH, m_sheet_name)
-    first_row_m_sheet =  machine_sheet[1]
-    first_row_values = tuple([cell.value for cell in first_row_m_sheet if cell.value is not None])
-    
-    # headers ROW for context Sheet
-    valid_header_m = is_valid_header(
-        first_row_values, grade_component_list
-    )  # valid headers for context
-    pairs_m = headers_come_in_pair(first_row_values)
-
-    if not valid_header_m or not pairs_m:
-        if not valid_header_m:
-            print(f"Error: `{m_sheet_name}` sheet does not have valid headers.")
-
-        if not pairs_m:
-            print(f"Error: `{m_sheet_name}` sheet does not come in pairs.")
-        return False
-
     return True
 
 # assumption 4
@@ -171,6 +137,7 @@ def headers_come_in_pair(headers_tuple):
 
 
 if __name__ == "__main__":
-    # assumption1 = check_assumption1(constants.MARKING_SCHEME_SHEET_NAME)
+    assumption1 = check_assumption1(constants.MARKING_SCHEME_SHEET_NAME)
     assumption2 = check_assumption2(constants.SHEET_NAMES)
-    print(assumption2)
+    assumption3 = check_assumption3(constants.MARKING_SCHEME_SHEET_NAME, constants.SHEET_NAMES)
+    print(assumption3)

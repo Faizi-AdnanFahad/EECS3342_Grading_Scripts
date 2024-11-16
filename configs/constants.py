@@ -25,7 +25,7 @@ MACHINE_SHEET_NAME = "Machine EnrollmentA"
 SHEET_NAMES = {
     PROOF_OBLIGATION_SHEET_NAME: "Proof Obligations",
     CONTEXT_SHEET_NAME: "Context opA",
-    MACHINE_SHEET_NAME: "Context opA"
+    MACHINE_SHEET_NAME: "Compilation-Errors"
 }
 
 # other useful Constants
