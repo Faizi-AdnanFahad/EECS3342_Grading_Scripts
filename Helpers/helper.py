@@ -1,11 +1,5 @@
 import openpyxl
 import configs.constants as constants
-import configs.epost_config as epost_configs
-
-XLSC_FILE_PATH = constants.INDIVIDUAL_XLSX_FILE_PATH
-MARKING_SCHEME_SHEET_NAME = constants.MARKING_SCHEME_SHEET_NAME
-PROOF_OBLIGATION_SHEET_NAME = constants.PROOF_OBLIGATION_SHEET_NAME
-
 
 def read_excel_file(file_path, sheet_name):
     """Given a file path and a sheet name, this function returns the sheet object"""
@@ -50,7 +44,7 @@ def get_eecs_logins(sheet):
 def get_grading_component_mapping(m_scheme_sheet_name):
     """Given a sheet name, supposedlly `Marking Scheme sheet name`, this function returns a the data as a mapping in the following form {"grading_component": {"instructor_comment": "abc", "specified_grade": 3}}"""
     grade_component_dict = {}
-    marking_scheme_sheet = read_excel_file(XLSC_FILE_PATH, m_scheme_sheet_name)
+    marking_scheme_sheet = read_excel_file(constants.INDIVIDUAL_XLSX_FILE_PATH, m_scheme_sheet_name)
     for row in marking_scheme_sheet.iter_rows(values_only=True):
         if is_a_grading_component(row):
             grade_component_name = row[constants.GRADING_COMP_COLUMN]
@@ -153,12 +147,23 @@ def is_constrained(sheet, grade_comp_to_grade):
     return True
 
 
-def get_total_mark(student_login, data_mapping):
+def get_total_mark_in_a_sheet(student_login, data_mapping):
     """Given a student eecs login, and the data mapping, returns the total mark by summing all marks in a sheet"""
     total = 0
     student_marks = data_mapping[student_login]
     for given_grade in student_marks.values():
         total += given_grade["given_grade"]
+    return total
+
+def get_total_mark(student_login):
+    total = 0
+    for sheet_name in constants.SHEET_NAMES.keys():
+        # load sheet objects
+        curr_sheet_obj = read_excel_file(constants.INDIVIDUAL_XLSX_FILE_PATH, sheet_name)
+        # load grade data-structure for each sheet
+        curr_sheet_data = get_sheet_data(curr_sheet_obj)
+        mark = get_total_mark_in_a_sheet(student_login, curr_sheet_data)
+        total += mark
     return total
 
 def read_file(file_path):

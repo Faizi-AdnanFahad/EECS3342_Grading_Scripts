@@ -3,11 +3,6 @@ import configs.constants as constants
 import Helpers.helper as helper
 
 XLSC_FILE_PATH = constants.INDIVIDUAL_XLSX_FILE_PATH
-MARKING_SCHEME_SHEET_NAME = constants.MARKING_SCHEME_SHEET_NAME
-PROOF_OBLIGATION_SHEET_NAME = constants.PROOF_OBLIGATION_SHEET_NAME
-CONTEXT_SHEET_NAME = constants.CONTEXT_SHEET_NAME
-MACHINE_SHEET_NAME = constants.MACHINE_SHEET_NAME
-
 
 # assumption 1:
 # Checks the assumption that the assigned marks for all grading components add up to TOTAL_MARK=100
@@ -31,7 +26,7 @@ def check_assumption1(sheet_name):
 # This function returns true if the 1st columns of all sheets are identical, false otherwise.
 def check_assumption2(sheets):
     eecs_logins = []
-    for sheet_names in sheets.values():
+    for sheet_names in sheets.keys():
         current_sheet_obj = helper.read_excel_file(XLSC_FILE_PATH, sheet_names)
         current_eecs_logins = helper.get_eecs_logins(current_sheet_obj)
         eecs_logins.append(current_eecs_logins)
@@ -54,7 +49,7 @@ def check_assumption3(m_scheme_sheet_name, sheets):
         helper.get_grading_component_mapping(m_scheme_sheet_name).keys()
     )
 
-    for sheet_name in sheets.values():
+    for sheet_name in sheets.keys():
         current_sheet_obj = helper.read_excel_file(XLSC_FILE_PATH, sheet_name)
         first_row_p_sheet =  current_sheet_obj[1]
         first_row_values = tuple([cell.value for cell in first_row_p_sheet if cell.value is not None])
@@ -80,7 +75,7 @@ def check_assumption3(m_scheme_sheet_name, sheets):
 # For each row, corresponding to marks that student receives, the numerical value should be constrained by the assigned marks for that grading component.
 def check_assumption4(m_scheme_sheet_name, sheets):
     grade_comp_to_grade = helper.get_grading_component_mapping(m_scheme_sheet_name)
-    for sheet_name in sheets.values():
+    for sheet_name in sheets.keys():
         current_sheet_obj = helper.read_excel_file(XLSC_FILE_PATH, sheet_name)
         is_sheet_constrained = helper.is_constrained(current_sheet_obj, grade_comp_to_grade)
         if not is_sheet_constrained:
@@ -120,11 +115,3 @@ def headers_come_in_pair(headers_tuple):
 
     # print(f"All grading components are correctly followed by {constants.TA_COMMENT_HEADER_NAME}.")
     return True
-
-
-if __name__ == "__main__":
-    # assumption1 = check_assumption1(constants.MARKING_SCHEME_SHEET_NAME)
-    # assumption2 = check_assumption2(constants.SHEET_NAMES)
-    # assumption3 = check_assumption3(constants.MARKING_SCHEME_SHEET_NAME, constants.SHEET_NAMES)
-    assumption4 = check_assumption4(constants.MARKING_SCHEME_SHEET_NAME, constants.SHEET_NAMES)
-    print(assumption4)
