@@ -4,22 +4,29 @@
 COURSE_NAME = "EECS 3342"
 SEMESTER = "FALL"
 YEAR_OF_TEACHING = "2024"
-TEST_NAME = "Programming Test 1"
+TEST_NAME = "Programming Test 3"
 
 # directories
+GRADES_DIRECTORY = "ProgTest2"
 INPUT_DIRECTORY = "./inputs"
-OUPTUT_DIRECTORY = "./outputs"
-GRADES_DIRECTORY = "ProgTest1"
+OUPTUT_DIRECTORY = f"./outputs/{GRADES_DIRECTORY}"
 
 # xlsx file name
-INDIVIDUAL_XLSX_FILE_PATH = f"{INPUT_DIRECTORY}/EECS3342-F24-ProgTest1c-Grading-Sheet.xlsx"  # Replace with your Excel file path that you want to check the assumptions on and generate `individual` feedback files for students
+INDIVIDUAL_XLSX_FILE_PATH = f"{INPUT_DIRECTORY}/{GRADES_DIRECTORY}/EECS3342-F24-ProgTest2a-Grading-Sheet.xlsx"  # Replace with your Excel file path that you want to check the assumptions on and generate `individual` feedback files for students
 DETAILED_STUDENT_INFO_PATH = f"{INPUT_DIRECTORY}/EECS3342E"
 
 # xlsx sheet names
-MARKING_SCHEME_SHEET_NAME = "Marking Scheme - ProgTest1c"
+MARKING_SCHEME_SHEET_NAME = "Marking Scheme - ProgTest2a"
+
 PROOF_OBLIGATION_SHEET_NAME = "Proof Obligations"
-CONTEXT_SHEET_NAME = "Context C0C"
-MACHINE_SHEET_NAME = "Machine EnrollmentC"
+CONTEXT_SHEET_NAME = "Context opA"
+MACHINE_SHEET_NAME = "Machine EnrollmentA"
+
+SHEET_NAMES = {
+    PROOF_OBLIGATION_SHEET_NAME: "Proof Obligations",
+    CONTEXT_SHEET_NAME: "Context opA",
+    MACHINE_SHEET_NAME: "Context opA"
+}
 
 # other useful Constants
 TA_COMMENT_HEADER_NAME = "TA Comment"

@@ -27,20 +27,18 @@ def check_assumption1(sheet_name):
 
 
 # assumption 2:
-# Assuming that the 1st column contains the EECS logins of all students taking that version of test.
-# This function returns true if the 1st columns of all three sheets is identical, false otherwise.
-def check_assumption2(po_sheet_name, c_sheet_name, m_sheet_name):
-    # sheets
-    proof_obligation_sheet = helper.read_excel_file(XLSC_FILE_PATH, po_sheet_name)
-    context_sheet = helper.read_excel_file(XLSC_FILE_PATH, c_sheet_name)
-    machine_sheet = helper.read_excel_file(XLSC_FILE_PATH, m_sheet_name)
-
-    # get the list of eecs logins in each sheet
-    eecs_logins_from_PO = helper.get_eecs_logins(proof_obligation_sheet)
-    eecs_logins_from_context = helper.get_eecs_logins(context_sheet)
-    eecs_logins_from_machine = helper.get_eecs_logins(machine_sheet)
-
-    if eecs_logins_from_PO == eecs_logins_from_context == eecs_logins_from_machine:
+# Assuming that the 1st column of sheets always contains the EECS logins of all students taking that version of test.
+# This function returns true if the 1st columns of all sheets are identical, false otherwise.
+def check_assumption2(sheets):
+    eecs_logins = []
+    for sheet_names in sheets.values():
+        current_sheet_obj = helper.read_excel_file(XLSC_FILE_PATH, sheet_names)
+        current_eecs_logins = helper.get_eecs_logins(current_sheet_obj)
+        eecs_logins.append(current_eecs_logins)
+    
+    identical = all(sublist == eecs_logins[0] for sublist in eecs_logins) 
+    
+    if identical:
         return True
     else:
         print(f"Error: Student logins aren't identical in all sheets.")
@@ -170,3 +168,9 @@ def headers_come_in_pair(headers_tuple):
 
     # print(f"All grading components are correctly followed by {constants.TA_COMMENT_HEADER_NAME}.")
     return True
+
+
+if __name__ == "__main__":
+    # assumption1 = check_assumption1(constants.MARKING_SCHEME_SHEET_NAME)
+    assumption2 = check_assumption2(constants.SHEET_NAMES)
+    print(assumption2)
