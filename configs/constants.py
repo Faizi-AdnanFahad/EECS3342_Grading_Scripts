@@ -12,13 +12,13 @@ INPUT_DIRECTORY = "./inputs"
 OUTPUT_DIRECTORY = f"./outputs"
 
 # xlsx file name
-INDIVIDUAL_XLSX_FILE_PATH = f"{INPUT_DIRECTORY}/{GRADES_DIRECTORY}/EECS3342-F24-ProgTest2a-Grading-Sheet.xlsx"  # Replace with your Excel file path that you want to check the assumptions on and generate `individual` feedback files for students
+INDIVIDUAL_XLSX_FILE_PATH = f"{INPUT_DIRECTORY}/{GRADES_DIRECTORY}/EECS3342-F24-ProgTest2b-Grading-Sheet.xlsx"  # Replace with your Excel file path that you want to check the assumptions on and generate `individual` feedback files for students
 DETAILED_STUDENT_INFO_PATH = f"{INPUT_DIRECTORY}/EECS3342E"
 
 # xlsx sheet names
-MARKING_SCHEME_SHEET_NAME = "Marking Scheme - ProgTest2a"
+MARKING_SCHEME_SHEET_NAME = "Marking Scheme - ProgTest2b"
 
-SHEET_NAMES = {"Proof Obligations": 30, "Context opA": 60, "Compilation-Errors": 10}
+SHEET_NAMES = {"Proof Obligations": 30, "Context opB": 60, "Compilation-Errors": 10}
 
 # other useful Constants
 TA_COMMENT_HEADER_NAME = "TA Comment"
