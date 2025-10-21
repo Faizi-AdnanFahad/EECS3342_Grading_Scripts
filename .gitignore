@@ -3,3 +3,5 @@ inputs/
 outputs/
 EECS3342.epost
 ProgTest1.ePost
+venv
+__pycache__
