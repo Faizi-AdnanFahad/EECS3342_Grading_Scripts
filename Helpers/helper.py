@@ -1,3 +1,4 @@
+import os
 import openpyxl
 import configs.constants as constants
 
@@ -19,6 +20,7 @@ def read_excel_file(file_path, sheet_name):
 def write_to_file(file_path, content):
     """Given a file path and some content, this files writes the content in the file"""
     try:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_path, "w") as file:  # Open the file in write mode
             file.write(content)  # Write the content to the file
         print(f"Content successfully written to {file_path}")

@@ -24,8 +24,13 @@ def generate_feedback():
         total_mark = helper.get_total_mark(student)
         
         full_name = id_to_full_name.get(student)
-        first_name = full_name.get("first_name")
-        last_name = full_name.get("last_name")
+        if full_name is None:
+            print(f"Warning: student '{student}' not found in {constants.DETAILED_STUDENT_INFO_PATH}; name will be blank.")
+            first_name = ""
+            last_name = ""
+        else:
+            first_name = full_name.get("first_name", "")
+            last_name = full_name.get("last_name", "")
         
         output_string += f"Student's EECS login: {student}\n"
         output_string += f"Full Name: {last_name}, {first_name}\n"
